@@ -1,0 +1,9 @@
+services:
+  db:
+    image: postgres:13
+    ports:
+      - ${DB_BIND}:5432
+    environment:
+      POSTGRES_USER: template_user
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: template_database
