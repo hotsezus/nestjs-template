@@ -2,13 +2,11 @@ import 'dotenv/config';
 
 import { TypeOrmModuleOptions } from '@nestjs/typeorm/dist/interfaces/typeorm-options.interface';
 
-import { isProduction } from './environment';
 import { booleanEnv } from './tools';
-
-const baseDir = isProduction ? 'dist' : 'src';
+import { typeormBaseDirectory } from './environment';
 
 console.error(
-  `TypeORM configuration uses base directory '${baseDir}' in ${__filename}`,
+  `TypeORM configuration uses base directory '${typeormBaseDirectory}' in ${__filename}`,
 );
 
 export const ormConfig: TypeOrmModuleOptions = {
@@ -18,11 +16,11 @@ export const ormConfig: TypeOrmModuleOptions = {
   username: process.env.TYPEORM_USERNAME,
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
-  entities: [`${baseDir}/database/entities/**/*.entity{.ts,.js}`],
+  entities: [`${typeormBaseDirectory}/database/entities/**/*.entity{.ts,.js}`],
   migrationsTableName: 'typeorm_migrations',
-  migrations: [`${baseDir}/database/migrations/*{.ts,.js}`],
+  migrations: [`${typeormBaseDirectory}/database/migrations/*{.ts,.js}`],
   cli: {
-    migrationsDir: `${baseDir}/database/migrations`,
+    migrationsDir: `${typeormBaseDirectory}/database/migrations`,
   },
   logging: booleanEnv(process.env.DEBUG_SQL),
 };

@@ -4,10 +4,10 @@ import { stdTimeFunctions } from 'pino';
 
 import { isProduction } from './config/environment';
 import { DatabaseModule } from './database/database.module';
+import { AppGraphqlModule } from './graphql/app.graphql-module';
 
 @Module({
   imports: [
-    DatabaseModule,
     LoggerModule.forRoot({
       pinoHttp: {
         level: isProduction ? 'info' : 'debug',
@@ -21,6 +21,8 @@ import { DatabaseModule } from './database/database.module';
         timestamp: stdTimeFunctions.isoTime,
       },
     }),
+    DatabaseModule,
+    AppGraphqlModule,
   ],
   controllers: [],
   providers: [],
