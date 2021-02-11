@@ -1,0 +1,23 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "entryFile": "bin/app",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "@nestjs/swagger/plugin",
+        "options": {
+          "dtoFileNameSuffix": [ ".controller.ts", ".type.ts"],
+          "introspectComments": true
+        }
+      },
+      {
+        "name": "@nestjs/graphql",
+        "options": {
+          "typeFileNameSuffix": [".type.ts"],
+          "introspectComments": true
+        }
+      }
+    ]
+  }
+}
