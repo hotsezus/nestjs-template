@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint \"src/**/*.ts\"",
-    "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "lint:fix": "eslint --fix \"src/**/*.ts\"",
     "prettify": "prettier --write \"src/**/*.ts\"",
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -18,7 +18,9 @@
     "cli:dev": "cross-env TYPEORM_BASE_DIRECTORY=src node --inspect -r ts-node/register src/bin/cli.ts",
     "cli:prod": "cross-env NODE_ENV=production node dist/bin/cli.js",
     "typeorm": "cross-env TYPEORM_BASE_DIRECTORY=src node -r ts-node/register ./node_modules/typeorm/cli.js -f src/config/ormconfig.ts",
-    "typeorm:prod": "cross-env NODE_ENV=production node ./node_modules/typeorm/cli.js -f dist/config/ormconfig.js"
+    "typeorm:prod": "cross-env NODE_ENV=production node ./node_modules/typeorm/cli.js -f dist/config/ormconfig.js",
+    "postinstall": "is-ci || husky install",
+    "prepare": "is-ci || husky install"
   },
   "dependencies": {
     "@nestjs/common": "^7.5.1",
@@ -67,10 +69,24 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "husky": "^5.1.3",
+    "is-ci": "^3.0.0",
+    "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
     "ts-loader": "^8.0.8",
     "ts-node": "^9.1.1",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.0.5"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{html,scss,css,json}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
