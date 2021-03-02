@@ -8,7 +8,10 @@
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint --fix \"src/**/*.ts\"",
     "prettify": "prettier --write \"src/**/*.ts\"",
+    "prepare": "is-ci || husky install",
     "prebuild": "rimraf dist",
+    "postinstall": "is-ci || husky install",
+    "mock": "dotenv graphql-faker --forward-headers Authorization --extend \"http://APP_HOST:$APP_PORT/graphql\" ./mock.graphql",
     "build": "nest build",
     "build:diagram": "ts-node ./node_modules/@proscom/typeorm-uml/bin/run src/config/ormconfig.ts --uml -n tables -n entities > diagram.puml",
     "start": "nest start",
@@ -18,9 +21,7 @@
     "cli:dev": "cross-env TYPEORM_BASE_DIRECTORY=src node --inspect -r ts-node/register src/bin/cli.ts",
     "cli:prod": "cross-env NODE_ENV=production node dist/bin/cli.js",
     "typeorm": "cross-env TYPEORM_BASE_DIRECTORY=src node -r ts-node/register ./node_modules/typeorm/cli.js -f src/config/ormconfig.ts",
-    "typeorm:prod": "cross-env NODE_ENV=production node ./node_modules/typeorm/cli.js -f dist/config/ormconfig.js",
-    "postinstall": "is-ci || husky install",
-    "prepare": "is-ci || husky install"
+    "typeorm:prod": "cross-env NODE_ENV=production node ./node_modules/typeorm/cli.js -f dist/config/ormconfig.js"
   },
   "dependencies": {
     "@nestjs/common": "^7.5.1",
@@ -31,6 +32,7 @@
     "@nestjs/platform-express": "^7.5.1",
     "@nestjs/swagger": "^4.7.12",
     "@nestjs/typeorm": "^7.1.5",
+    "@proscom/graphql-faker": "^2.0.0-rc.23",
     "apollo-server-express": "^2.21.0",
     "bcrypt": "^5.0.0",
     "class-transformer": "^0.3.2",
@@ -64,6 +66,7 @@
     "@types/yargs": "^16.0.0",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
+    "dotenv-cli": "^4.0.0",
     "eslint": "^7.19.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-import": "^2.22.1",
