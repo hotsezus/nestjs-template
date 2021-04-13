@@ -11,7 +11,7 @@
     "prepare": "is-ci || husky install",
     "prebuild": "rimraf dist",
     "postinstall": "is-ci || husky install",
-    "mock": "dotenv graphql-faker --forward-headers Authorization --extend \"http://APP_HOST:$APP_PORT/graphql\" ./mock.graphql",
+    "mock": "dotenv graphql-faker --forward-headers Authorization --extend \"http://$APP_HOST:$APP_PORT/graphql\" ./mock.graphql",
     "build": "nest build",
     "build:diagram": "ts-node ./node_modules/@proscom/typeorm-uml/bin/run src/config/ormconfig.ts --uml -n tables -n entities > diagram.puml",
     "start": "nest start",
