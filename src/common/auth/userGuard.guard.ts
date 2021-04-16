@@ -3,7 +3,6 @@ import { Constructor } from '@nestjs/common/utils/merge-with-values.util';
 import { GqlExecutionContext, GraphQLExecutionContext } from '@nestjs/graphql';
 
 import { User } from '../../database/entities/user/user.entity';
-import { UserService } from '../../database/entities/user/user.service';
 
 export type UserGuardCheck = (
   user: User,

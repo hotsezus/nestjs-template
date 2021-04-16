@@ -26,7 +26,6 @@ import { User } from './user.entity';
 import { UserAuthPassword } from './userAuthPassword.entity';
 import { UserAuthToken } from './userAuthToken.entity';
 import { TokenType } from './userAuthTokenFields';
-import { UserInputFields } from './userFields';
 
 @Injectable()
 export class UserService {

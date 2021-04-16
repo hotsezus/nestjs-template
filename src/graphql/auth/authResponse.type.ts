@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ObjectType } from '@nestjs/graphql';
 
 import { UserType } from '../user/user.type';
 import { UserAuthTokenType } from './userAuthToken.type';
