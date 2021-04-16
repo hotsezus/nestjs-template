@@ -2,9 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Command, Option, Positional } from 'nestjs-command';
 import { Logger } from 'nestjs-pino';
 
+import { TestQueueService } from '../jobs/queues/testQueue/testQueue.service';
+
 @Injectable()
 export class TestCommand {
-  constructor(private logger: Logger) {}
+  constructor(
+    private logger: Logger,
+    private readonly testQueueService: TestQueueService,
+  ) {}
 
   @Command({
     command: 'test <value>',
@@ -34,5 +39,12 @@ export class TestCommand {
       }
     }
     this.logger.log(value);
+  }
+
+  @Command({
+    command: 'test:worker',
+  })
+  async testWorker() {
+    await this.testQueueService.add({ msg: 'Test queue msg' });
   }
 }
