@@ -1,5 +1,4 @@
 import {
-  OnQueueActive,
   OnQueueCompleted,
   OnQueueFailed,
   Process,
