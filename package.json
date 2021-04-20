@@ -20,10 +20,13 @@
     "cli": "cross-env TYPEORM_BASE_DIRECTORY=src node -r tsconfig-paths/register -r ts-node/register src/bin/cli.ts",
     "cli:dev": "cross-env TYPEORM_BASE_DIRECTORY=src node --inspect -r ts-node/register src/bin/cli.ts",
     "cli:prod": "cross-env NODE_ENV=production node dist/bin/cli.js",
+    "worker:dev": "cross-env TYPEORM_BASE_DIRECTORY=src node -r ts-node/register src/bin/worker.ts",
+    "worker:prod": "cross-env NODE_ENV=production node dist/bin/worker.js",
     "typeorm": "cross-env TYPEORM_BASE_DIRECTORY=src node -r ts-node/register ./node_modules/typeorm/cli.js -f src/config/ormconfig.ts",
     "typeorm:prod": "cross-env NODE_ENV=production node ./node_modules/typeorm/cli.js -f dist/config/ormconfig.js"
   },
   "dependencies": {
+    "@nestjs/bull": "^0.3.1",
     "@nestjs/common": "^7.5.1",
     "@nestjs/core": "^7.5.1",
     "@nestjs/graphql": "^7.9.8",
@@ -33,14 +36,17 @@
     "@nestjs/swagger": "^4.7.12",
     "@nestjs/typeorm": "^7.1.5",
     "@proscom/graphql-faker": "^2.0.0-rc.23",
+    "@types/bull": "^3.15.0",
     "apollo-server-express": "^2.21.0",
     "bcrypt": "^5.0.0",
-    "class-transformer": "^0.3.2",
+    "bull": "^3.22.0",
+    "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "cookie-parser": "^1.4.5",
     "cross-env": "^7.0.3",
     "date-fns": "^2.17.0",
     "dotenv": "^8.2.0",
+    "eslint-plugin-unused-imports": "^1.1.1",
     "nanoid": "^3.1.20",
     "nestjs-command": "^2.0.0",
     "nestjs-pino": "^1.3.0",
@@ -68,15 +74,15 @@
     "@typescript-eslint/parser": "^4.15.0",
     "dotenv-cli": "^4.0.0",
     "eslint": "^7.19.0",
-    "eslint-config-prettier": "^7.2.0",
+    "eslint-config-prettier": "^8.2.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "husky": "^5.1.3",
+    "husky": "^6.0.0",
     "is-ci": "^3.0.0",
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
-    "ts-loader": "^8.0.8",
+    "ts-loader": "^9.0.2",
     "ts-node": "^9.1.1",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.0.5"
@@ -84,12 +90,10 @@
   "lint-staged": {
     "*.{ts,js}": [
       "prettier --write",
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ],
     "*.{html,scss,css,json}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   }
 }

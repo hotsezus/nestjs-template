@@ -22,11 +22,10 @@ import {
 } from '../../../graphql/user/user.type';
 import { exceptionDuplicateKey } from '../../../utils/exceptions';
 import { applyChanges } from '../../../utils/objects';
-import { User } from './user.entity';
+import { User } from './entity/user.entity';
 import { UserAuthPassword } from './userAuthPassword.entity';
 import { UserAuthToken } from './userAuthToken.entity';
 import { TokenType } from './userAuthTokenFields';
-import { UserInputFields } from './userFields';
 
 @Injectable()
 export class UserService {
