@@ -40,7 +40,7 @@
     "apollo-server-express": "^2.21.0",
     "bcrypt": "^5.0.0",
     "bull": "^3.22.0",
-    "class-transformer": "^0.3.2",
+    "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "cookie-parser": "^1.4.5",
     "cross-env": "^7.0.3",
@@ -74,15 +74,15 @@
     "@typescript-eslint/parser": "^4.15.0",
     "dotenv-cli": "^4.0.0",
     "eslint": "^7.19.0",
-    "eslint-config-prettier": "^7.2.0",
+    "eslint-config-prettier": "^8.2.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "husky": "^5.1.3",
+    "husky": "^6.0.0",
     "is-ci": "^3.0.0",
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
-    "ts-loader": "^8.0.8",
+    "ts-loader": "^9.0.2",
     "ts-node": "^9.1.1",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.0.5"
@@ -90,12 +90,10 @@
   "lint-staged": {
     "*.{ts,js}": [
       "prettier --write",
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ],
     "*.{html,scss,css,json}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   }
 }

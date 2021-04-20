@@ -2,6 +2,6 @@
 <project version="4">
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{nestjs-template/node_modules}" />
-    <file url="PROJECT" libraries="{nestjs-template/node_modules}" />
+    <file url="PROJECT" libraries="{dist, nestjs-template/node_modules}" />
   </component>
 </project>

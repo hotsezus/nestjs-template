@@ -1,11 +1,5 @@
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  registerEnumType,
-} from '@nestjs/graphql';
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { InputType, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Column } from 'typeorm';
 
 export enum UserRolesEnum {
   DEFAULT = 'DEFAULT',
@@ -19,7 +13,7 @@ registerEnumType(UserRolesEnum, {
 
 @InputType({ isAbstract: true })
 @ObjectType({ isAbstract: true })
-export abstract class UserInputFields {
+export abstract class UserCommonFields {
   @Column({ type: 'varchar', length: 255, unique: true, nullable: true })
   login?: string;
 
@@ -31,11 +25,4 @@ export abstract class UserInputFields {
 
   @Column({ type: 'enum', enum: UserRolesEnum, default: UserRolesEnum.DEFAULT })
   role?: UserRolesEnum;
-}
-
-@ObjectType({ isAbstract: true })
-export abstract class UserFields extends UserInputFields {
-  @PrimaryGeneratedColumn()
-  @Field((type) => ID)
-  id: number;
 }

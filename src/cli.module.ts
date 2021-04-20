@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 
-import { CliCommandsModule } from './cli/cliCommands.module';
-import { SystemModule } from './system/system.module';
+import { CommandsModule } from './cli/commands.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
-  imports: [SystemModule, CliCommandsModule],
+  imports: [CommonModule, CommandsModule],
 })
 export class CliModule {}

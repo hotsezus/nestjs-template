@@ -7,8 +7,8 @@ import {
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 
-import { Queues } from '../bull.config';
-import { TestQueuePayload } from '../queues/testQueue/testQueue.service';
+import { TestQueuePayload } from '../../common/queues/testQueue/testQueue.service';
+import { Queues } from '../../config/bull';
 
 @Processor(Queues.test)
 export class TestQueueProcessor {

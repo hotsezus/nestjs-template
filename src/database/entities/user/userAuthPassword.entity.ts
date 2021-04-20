@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { User } from './user.entity';
+import { User } from './entity/user.entity';
 
 @Entity('user_auth_passwords')
 export class UserAuthPassword {
