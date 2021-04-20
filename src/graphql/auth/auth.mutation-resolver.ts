@@ -9,7 +9,7 @@ import { UserService } from '../../database/entities/user/user.service';
 import { AuthResponseType } from './authResponse.type';
 
 @Resolver()
-export class LoginResolver {
+export class AuthMutationResolver {
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
