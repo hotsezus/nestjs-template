@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Command, Option, Positional } from 'nestjs-command';
 import { Logger } from 'nestjs-pino';
 
-import { TestQueueService } from '../jobs/queues/testQueue/testQueue.service';
+import { TestQueueService } from '../../common/queues/testQueue/testQueue.service';
 
 @Injectable()
 export class TestCommand {

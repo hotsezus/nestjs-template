@@ -5,7 +5,7 @@ module.exports = {
   extends: [
     // Последовательность этих трех импортов обеспечивает возможность автоматически фиксить код через 'eslint --fix'
     'plugin:@typescript-eslint/recommended',
-    'prettier/@typescript-eslint',
+    'prettier',
     'plugin:prettier/recommended',
   ],
   parser: '@typescript-eslint/parser',

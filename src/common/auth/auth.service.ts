@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { JwtAccessPayload } from '../../config/jwt';
-import { User } from '../../database/entities/user/user.entity';
+import { User } from '../../database/entities/user/entity/user.entity';
 import { UserService } from '../../database/entities/user/user.service';
 import { AuthResponseType } from '../../graphql/auth/authResponse.type';
 import { clean } from '../../utils/objects';

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import path from 'path';
 
-import { initialConfig, playgroundConfig } from './graphql.config';
+import { initialConfig, playgroundConfig } from '../config/graphql';
 import { ResolversModule } from './resolvers.module';
 
 @Module({

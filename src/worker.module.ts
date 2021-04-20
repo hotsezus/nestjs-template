@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 
-import { ProcessorsModule } from './jobs/processors/processors.module';
-import { SystemModule } from './system/system.module';
+import { CommonModule } from './common/common.module';
+import { ProcessorsModule } from './worker/processors.module';
 
 @Module({
-  imports: [SystemModule, ProcessorsModule],
+  imports: [CommonModule, ProcessorsModule],
 })
 export class WorkerModule {}

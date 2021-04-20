@@ -4,7 +4,7 @@ import {
   graphqlEnableDebug,
   graphqlEnablePlayground,
   graphqlPlaygroundEndpoint,
-} from '../config/environment';
+} from './environment';
 
 export const initialConfig: Partial<GqlModuleOptions> = {
   debug: graphqlEnableDebug,

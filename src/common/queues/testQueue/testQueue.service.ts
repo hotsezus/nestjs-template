@@ -2,7 +2,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
 
-import { Queues } from '../../bull.config';
+import { Queues } from '../../../config/bull';
 
 export interface TestQueuePayload {
   msg: string;

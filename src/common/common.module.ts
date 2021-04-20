@@ -4,7 +4,7 @@ import { stdTimeFunctions } from 'pino';
 
 import { isProduction } from '../config/environment';
 import { DatabaseModule } from '../database/database.module';
-import { QueuesModule } from '../jobs/queues/queues.module';
+import { QueuesModule } from './queues/queues.module';
 
 @Module({
   imports: [
@@ -26,4 +26,4 @@ import { QueuesModule } from '../jobs/queues/queues.module';
   ],
   exports: [DatabaseModule, LoggerModule],
 })
-export class SystemModule {}
+export class CommonModule {}
