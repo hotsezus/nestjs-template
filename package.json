@@ -22,6 +22,8 @@
     "cli:prod": "cross-env NODE_ENV=production node dist/bin/cli.js",
     "worker:dev": "cross-env TYPEORM_BASE_DIRECTORY=src node -r ts-node/register src/bin/worker.ts",
     "worker:prod": "cross-env NODE_ENV=production node dist/bin/worker.js",
+    "scheduler:dev": "cross-env TYPEORM_BASE_DIRECTORY=src node -r ts-node/register src/bin/scheduler.ts",
+    "scheduler:prod": "cross-env NODE_ENV=production node dist/bin/scheduler.js",
     "typeorm": "cross-env TYPEORM_BASE_DIRECTORY=src node -r ts-node/register ./node_modules/typeorm/cli.js -f src/config/ormconfig.ts",
     "typeorm:prod": "cross-env NODE_ENV=production node ./node_modules/typeorm/cli.js -f dist/config/ormconfig.js"
   },
@@ -33,6 +35,7 @@
     "@nestjs/jwt": "^7.2.0",
     "@nestjs/passport": "^7.1.5",
     "@nestjs/platform-express": "^7.5.1",
+    "@nestjs/schedule": "^0.4.3",
     "@nestjs/swagger": "^4.7.12",
     "@nestjs/typeorm": "^7.1.5",
     "@proscom/graphql-faker": "^2.0.0-rc.23",
