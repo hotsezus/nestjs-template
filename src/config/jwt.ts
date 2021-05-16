@@ -1,3 +1,5 @@
+import { tryNumber } from '@proscom/ui-utils';
+
 /**
  * Содержимое краткосрочного jwt-токена
  */
@@ -17,27 +19,34 @@ if (!jwtSecretKey) {
 /**
  * Время действия jwt-токена
  */
-export const jwtExpiration = +process.env.JWT_EXPIRATION || 3600;
+export const jwtExpiration = tryNumber(process.env.JWT_EXPIRATION, 3600);
 
 /**
  * Время действия долгосрочного токена
  */
-export const refreshExpiration =
-  +process.env.REFRESH_TOKEN_EXPIRATION || 7 * 24 * 3600;
+export const refreshExpiration = tryNumber(
+  process.env.REFRESH_TOKEN_EXPIRATION,
+  7 * 24 * 3600,
+);
 
 /**
  * Сложность генерации соли для хеширования пароля
  */
-export const saltRounds = +process.env.BCRYPT_HASH_ROUNDS || 12;
+export const saltRounds = tryNumber(process.env.BCRYPT_HASH_ROUNDS, 12);
 
 /**
  * Длина долгосрочного токена аутентификации
  */
-export const refreshTokenLength = +process.env.REFRESH_TOKEN_LENGTH || 256;
+export const refreshTokenLength = tryNumber(
+  process.env.REFRESH_TOKEN_LENGTH,
+  256,
+);
 
 /**
  * Время, в течение которого долгосрочный токен может быть повторно использован
  * для получения нового краткосрочного токена
  */
-export const refreshTokenReuseTimeout =
-  +process.env.REFRESH_TOKEN_REUSE_TIMEOUT || 60;
+export const refreshTokenReuseTimeout = tryNumber(
+  process.env.REFRESH_TOKEN_REUSE_TIMEOUT,
+  60,
+);

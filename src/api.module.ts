@@ -6,4 +6,4 @@ import { AppGraphqlModule } from './graphql/app.graphql-module';
 @Module({
   imports: [CommonModule, AppGraphqlModule],
 })
-export class AppModule {}
+export class ApiModule {}

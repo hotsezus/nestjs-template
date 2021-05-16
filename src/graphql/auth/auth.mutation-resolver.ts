@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { NotFoundException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
 import { AuthService } from '../../common/auth/auth.service';
@@ -34,6 +34,9 @@ export class AuthMutationResolver {
   @UseGuards(GraphqlAuthGuard, UserGuard(isAdmin))
   async loginWithId(@Args('id') id: number): Promise<AuthResponseType> {
     const user = await this.userService.getById(id);
+    if (!user) {
+      throw new NotFoundException();
+    }
     return await this.authService.generateResponse(user);
   }
 

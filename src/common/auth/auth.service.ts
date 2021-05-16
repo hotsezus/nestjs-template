@@ -28,7 +28,7 @@ export class AuthService {
   /**
    * Выбрасывает ошибку авторизации, если передано пустое значение
    */
-  async requireUser(user: User) {
+  async requireUser(user?: User) {
     if (!user) {
       throw new UnauthorizedException();
     }

@@ -3,7 +3,8 @@ import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
 
 import { GraphqlAuthGuard } from '../../common/auth/graphqlAuth.guard';
 import { UserService } from '../../database/entities/user/user.service';
-import { UserCreateInput, UserType, UserUpdateInput } from './user.type';
+import { UserCreateInput, UserUpdateInput } from './user.input';
+import { UserType } from './user.type';
 
 @UseGuards(GraphqlAuthGuard)
 @Resolver()

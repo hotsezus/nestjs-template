@@ -1,20 +1,25 @@
 {
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
-  "entryFile": "bin/app",
+  "entryFile": "bin/api",
   "compilerOptions": {
     "plugins": [
       {
         "name": "@nestjs/swagger/plugin",
         "options": {
-          "dtoFileNameSuffix": [ ".controller.ts", ".type.ts"],
+          "dtoFileNameSuffix": [".controller.ts", ".type.ts"],
           "introspectComments": true
         }
       },
       {
         "name": "@nestjs/graphql",
         "options": {
-          "typeFileNameSuffix": [".type.ts"],
+          "typeFileNameSuffix": [
+            ".common-fields.ts",
+            ".fields.ts",
+            ".type.ts",
+            ".input.ts"
+          ],
           "introspectComments": true
         }
       }

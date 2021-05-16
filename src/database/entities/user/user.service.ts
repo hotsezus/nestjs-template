@@ -19,7 +19,7 @@ import {
 import {
   UserCreateInput,
   UserUpdateInput,
-} from '../../../graphql/user/user.type';
+} from '../../../graphql/user/user.input';
 import { exceptionDuplicateKey } from '../../../utils/exceptions';
 import { applyChanges } from '../../../utils/objects';
 import { User } from './entity/user.entity';
@@ -46,7 +46,9 @@ export class UserService {
       const { password, ...userData } = params;
       const user = new User();
 
-      await this.changeUserPassword(user, password);
+      if (password) {
+        await this.changeUserPassword(user, password);
+      }
 
       applyChanges(user, userData);
       return this.userRepo.save(user);
@@ -65,7 +67,9 @@ export class UserService {
 
     const { new_password, ...userParams } = params;
 
-    await this.changeUserPassword(existingUser, new_password);
+    if (new_password) {
+      await this.changeUserPassword(existingUser, new_password);
+    }
 
     applyChanges(existingUser, userParams);
 
@@ -181,8 +185,9 @@ export class UserService {
 
     const now = new Date();
     if (
+      userAuthToken.expires_at &&
       differenceInSeconds(userAuthToken.expires_at, now) >
-      refreshTokenReuseTimeout
+        refreshTokenReuseTimeout
     ) {
       userAuthToken.expires_at = addSeconds(now, refreshTokenReuseTimeout);
       await this.userAuthTokenRepo.save(userAuthToken);

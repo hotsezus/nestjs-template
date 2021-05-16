@@ -1,4 +1,9 @@
-import { InputType, ObjectType, registerEnumType } from '@nestjs/graphql';
+import {
+  Extensions,
+  InputType,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
 import { Column } from 'typeorm';
 
 export enum UserRolesEnum {
@@ -23,6 +28,7 @@ export abstract class UserCommonFields {
   @Column({ type: 'varchar', length: 255, nullable: true })
   name?: string;
 
+  @Extensions({ requiredRole: UserRolesEnum.ADMIN })
   @Column({ type: 'enum', enum: UserRolesEnum, default: UserRolesEnum.DEFAULT })
   role?: UserRolesEnum;
 }
