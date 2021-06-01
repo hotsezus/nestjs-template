@@ -7,10 +7,12 @@
     * Postgres
     * Redis
 * NestJS
+  * GraphQL
+  * CLI plugins
 * TypeORM
 * ESLint
 * Prettier
-* @proscom/typeorm-uml
+* typeorm-uml
 * bull
 * [graphql-faker](https://github.com/Proscom/graphql-faker/tree/overrides)
 
@@ -19,3 +21,4 @@
 * [Как создать проект на основе этого шаблона?](./docs/fork.md)
 * [Гайд по стилю разработки](./docs/code.md)
 * [Активация mock-сервера для расширения API или мока данных](./docs/mock.md)
+* [Автоматически генерируемая диаграмма сущностей](./docs/diagram.png)

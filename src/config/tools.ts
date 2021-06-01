@@ -15,3 +15,11 @@ export function requireEnv(variable: string | undefined, name: string) {
 export function booleanEnv(variable: string | undefined) {
   return env(variable, 'false') === 'true';
 }
+
+export function tryEnum(value, enumObject, defaultValue) {
+  const enumValues = Object.values(enumObject);
+  if (enumValues.findIndex((enumValue) => enumValue === value) !== -1) {
+    return value;
+  }
+  return defaultValue;
+}

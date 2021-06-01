@@ -3,10 +3,8 @@ module.exports = {
     node: true,
   },
   extends: ['prettier'],
-  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2020,
-    project: 'tsconfig.json',
     sourceType: 'module',
   },
   ignorePatterns: ['.eslintrc.js'],
@@ -23,6 +21,10 @@ module.exports = {
   overrides: [
     {
       files: ['**/*.ts', '**/*.tsx'],
+      parser: '@typescript-eslint/parser',
+      parserOptions: {
+        project: 'tsconfig.json',
+      },
       extends: ['plugin:@typescript-eslint/recommended', 'prettier'],
       plugins: ['@typescript-eslint', 'import', 'simple-import-sort'],
       rules: {
