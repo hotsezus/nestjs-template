@@ -1,5 +1,15 @@
 import { UnprocessableEntityException } from '@nestjs/common';
 
+export class CustomError extends Error {
+  constructor(message) {
+    super(message);
+
+    // Исправляем проблемы с прототипами
+    Object.setPrototypeOf(this, this.constructor.prototype);
+    this.name = this.constructor.name;
+  }
+}
+
 export const exceptionDuplicateKey = (e) => {
   const match =
     e.name === 'QueryFailedError' &&
