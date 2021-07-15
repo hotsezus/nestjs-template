@@ -1,14 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bull';
+import { Injectable, Logger } from '@nestjs/common';
+import { Queue } from 'bull';
 import { Command, Option, Positional } from 'nestjs-command';
-import { Logger } from 'nestjs-pino';
 
-import { TestQueueService } from '../../common/queues/testQueue/testQueue.service';
+import {
+  BULL_QUEUE_TEST,
+  BullQueueTestPayload,
+} from '../../common/queues/test.queue';
 
 @Injectable()
 export class TestCommand {
+  protected readonly logger = new Logger(TestCommand.name);
+
   constructor(
-    private logger: Logger,
-    private readonly testQueueService: TestQueueService,
+    @InjectQueue(BULL_QUEUE_TEST)
+    private readonly testQueue: Queue<BullQueueTestPayload>,
   ) {}
 
   @Command({
@@ -45,6 +51,6 @@ export class TestCommand {
     command: 'test:worker',
   })
   async testWorker() {
-    await this.testQueueService.add({ msg: 'Test queue msg' });
+    await this.testQueue.add({ payload: 'Test queue msg' });
   }
 }

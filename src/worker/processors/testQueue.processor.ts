@@ -1,35 +1,27 @@
-import {
-  OnQueueCompleted,
-  OnQueueFailed,
-  Process,
-  Processor,
-} from '@nestjs/bull';
+import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 
-import { TestQueuePayload } from '../../common/queues/testQueue/testQueue.service';
-import { Queues } from '../../config/bull';
+import {
+  BULL_QUEUE_TEST,
+  BullQueueTestPayload,
+} from '../../common/queues/test.queue';
+import { BaseProcessor } from './base.processor';
 
-@Processor(Queues.test)
-export class TestQueueProcessor {
-  private readonly logger = new Logger(TestQueueProcessor.name);
-
-  @OnQueueFailed()
-  async onFailed(job: Job, err: Error) {
-    this.logger.log(
-      `'test' job ${job.id} failed with error: ${JSON.stringify(err)}`,
-    );
-  }
-
-  @OnQueueCompleted()
-  async onCompleted(job: Job<TestQueuePayload>) {
-    this.logger.log(`'test' job ${job.id} completed`);
+/**
+ * Конкретный класс обработчика тестовой очереди
+ */
+@Processor(BULL_QUEUE_TEST)
+export class TestQueueProcessor extends BaseProcessor {
+  constructor() {
+    super(BULL_QUEUE_TEST, new Logger(TestQueueProcessor.name));
   }
 
   @Process()
-  async process(job: Job<TestQueuePayload>) {
-    this.logger.log(
-      `Processing 'test' job ${job.id} with data ${JSON.stringify(job.data)}`,
-    );
+  async process(job: Job<BullQueueTestPayload>) {
+    this.logger.log({
+      msg: 'Processing test job',
+      data: job.data,
+    });
   }
 }

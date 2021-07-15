@@ -2,10 +2,10 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 
 import { bullConfig } from '../../config/bull';
-import { TestQueueModule } from './testQueue/testQueue.module';
+import { AppQueuesModule } from './appQueues.module';
 
 @Module({
-  imports: [BullModule.forRoot(bullConfig), TestQueueModule],
-  exports: [TestQueueModule],
+  imports: [BullModule.forRoot(bullConfig), AppQueuesModule],
+  exports: [AppQueuesModule],
 })
 export class QueuesModule {}
