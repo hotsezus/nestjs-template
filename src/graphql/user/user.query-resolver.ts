@@ -10,6 +10,9 @@ import { UserType } from './user.type';
 export class UserQueryResolver {
   constructor(private readonly userService: UserService) {}
 
+  /**
+   * Возвращает пользователя по его идентификатору
+   */
   @Query(() => UserType, { nullable: true })
   async user(
     @Args({

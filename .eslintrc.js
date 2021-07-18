@@ -35,6 +35,12 @@ module.exports = {
         '@typescript-eslint/interface-name-prefix': 0,
         '@typescript-eslint/explicit-function-return-type': 0,
         '@typescript-eslint/explicit-module-boundary-types': 0,
+        '@typescript-eslint/ban-ts-comment': [
+          1,
+          {
+            'ts-ignore': 'allow-with-description',
+          },
+        ],
       },
     },
   ],

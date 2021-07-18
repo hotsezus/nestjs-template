@@ -1,5 +1,5 @@
 import {
-  Extensions,
+  Field,
   InputType,
   ObjectType,
   registerEnumType,
@@ -20,15 +20,18 @@ registerEnumType(UserRolesEnum, {
 @ObjectType({ isAbstract: true })
 export abstract class UserCommonFields {
   @Column({ type: 'varchar', length: 255, unique: true, nullable: true })
-  login?: string;
+  @Field(() => String, { nullable: true })
+  login?: string | null;
 
   @Column({ type: 'varchar', length: 255, unique: true, nullable: true })
-  email?: string;
+  @Field(() => String, { nullable: true })
+  email?: string | null;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  name?: string;
+  @Field(() => String, { nullable: true })
+  name?: string | null;
 
-  @Extensions({ requiredRole: UserRolesEnum.ADMIN })
   @Column({ type: 'enum', enum: UserRolesEnum, default: UserRolesEnum.DEFAULT })
-  role?: UserRolesEnum;
+  @Field(() => UserRolesEnum, { nullable: true })
+  role?: UserRolesEnum | null;
 }

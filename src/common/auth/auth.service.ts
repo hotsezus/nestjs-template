@@ -2,10 +2,10 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { JwtAccessPayload } from '../../config/jwt';
-import { User } from '../../database/entities/user/entity/user.entity';
+import { User } from '../../database/entities/user/user.entity';
 import { UserService } from '../../database/entities/user/user.service';
-import { AuthResponseType } from '../../graphql/auth/authResponse.type';
-import { clean } from '../../utils/objects';
+import { UserTokensService } from '../../database/entities/userTokens/userTokens.service';
+import { clean } from '../../utils/object';
 
 /**
  * Сервис аутентификации
@@ -15,6 +15,7 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
+    private readonly userTokensService: UserTokensService,
   ) {}
 
   /**
@@ -50,7 +51,7 @@ export class AuthService {
    * Создает refresh-токен для пользователя
    */
   async createRefreshToken(user: User) {
-    return this.userService.createUserRefreshToken(user);
+    return this.userTokensService.createUserRefreshToken(user);
   }
 
   async generateTokens(user: User) {
@@ -60,7 +61,7 @@ export class AuthService {
     ]);
   }
 
-  async generateResponse(user: User): Promise<AuthResponseType> {
+  async generateResponse(user: User) {
     const [accessToken, refreshToken] = await this.generateTokens(user);
     return {
       user,

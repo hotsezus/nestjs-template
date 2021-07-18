@@ -11,9 +11,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { UserAuthPassword } from '../userAuthPassword.entity';
-import { UserAuthToken } from '../userAuthToken.entity';
+import { UserAuthToken } from '../userTokens/userAuthToken.entity';
 import { UserFields } from './user.fields';
+import { UserAuthPassword } from './userAuthPassword.entity';
 
 @Entity('users')
 export class User extends UserFields {

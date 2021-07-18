@@ -1,7 +1,7 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 
-import { UserCommonFields } from '../../database/entities/user/entity/user.common-fields';
-import { UserFields } from '../../database/entities/user/entity/user.fields';
+import { UserCommonFields } from '../../database/entities/user/user.common-fields';
+import { UserFields } from '../../database/entities/user/user.fields';
 
 @InputType()
 export class UserCreateInput extends UserCommonFields {

@@ -25,5 +25,5 @@ export abstract class UserAuthTokenFields {
 
   @Column({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
-  expires_at?: Date;
+  expires_at?: Date | null;
 }

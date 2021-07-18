@@ -1,41 +1,23 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import bcrypt from 'bcrypt';
-import { addSeconds, differenceInSeconds } from 'date-fns';
-import { nanoid } from 'nanoid/async';
-import { MoreThan, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 
-import {
-  refreshExpiration,
-  refreshTokenLength,
-  refreshTokenReuseTimeout,
-  saltRounds,
-} from '../../../config/jwt';
 import {
   UserCreateInput,
   UserUpdateInput,
 } from '../../../graphql/user/user.input';
-import { exceptionDuplicateKey } from '../../../utils/exceptions';
-import { applyChanges } from '../../../utils/objects';
-import { User } from './entity/user.entity';
-import { UserAuthPassword } from './userAuthPassword.entity';
-import { UserAuthToken } from './userAuthToken.entity';
-import { TokenType } from './userAuthTokenFields';
+import { applyChanges } from '../../../utils/object';
+import { exceptionDuplicateKey } from '../../../utils/sqlErors';
+import { User } from './user.entity';
+import { UserPasswordsService } from './userPasswords.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-    @InjectRepository(UserAuthPassword)
-    private readonly userAuthPasswordRepo: Repository<UserAuthPassword>,
-    @InjectRepository(UserAuthToken)
-    private readonly userAuthTokenRepo: Repository<UserAuthToken>,
+    private readonly userPasswordsService: UserPasswordsService,
   ) {}
 
   /**
@@ -47,7 +29,7 @@ export class UserService {
       const user = new User();
 
       if (password) {
-        await this.changeUserPassword(user, password);
+        await this.userPasswordsService.changeUserPassword(user, password);
       }
 
       applyChanges(user, userData);
@@ -68,7 +50,10 @@ export class UserService {
     const { new_password, ...userParams } = params;
 
     if (new_password) {
-      await this.changeUserPassword(existingUser, new_password);
+      await this.userPasswordsService.changeUserPassword(
+        existingUser,
+        new_password,
+      );
     }
 
     applyChanges(existingUser, userParams);
@@ -108,120 +93,5 @@ export class UserService {
     return this.userRepo.findOne({
       where: [{ email: emailOrLogin }, { login: emailOrLogin }],
     });
-  }
-
-  /**
-   * Создает долгосрочный токен доступа
-   */
-  public async createUserRefreshToken(
-    user: User,
-    expiration = refreshExpiration,
-  ) {
-    const userToken = new UserAuthToken();
-    userToken.type = TokenType.REFRESH;
-    userToken.user = user;
-    userToken.token = await nanoid(refreshTokenLength);
-    userToken.expires_at = addSeconds(new Date(), expiration);
-    return this.userAuthTokenRepo.save(userToken);
-  }
-
-  /**
-   * Удаляет старые токены из базы данных
-   */
-  public async removeOldTokens() {
-    const result = await this.userAuthTokenRepo
-      .createQueryBuilder()
-      .delete()
-      .where('(expires_at is null or expires_at < :now)', { now: new Date() })
-      .execute();
-    return result.raw[1] || 0;
-  }
-
-  /**
-   * Сохраняет/перезаписывает хеш пользовательского пароля
-   */
-  public async changeUserPassword(user: User, password: string) {
-    // Удалить старый пароль
-    await this.userAuthPasswordRepo
-      .createQueryBuilder()
-      .delete()
-      .where('user_id = :user_id', { user_id: user.id })
-      .execute();
-
-    const userPassword = new UserAuthPassword();
-    userPassword.user = user;
-    userPassword.hash = await this.hashPassword(password);
-    return this.userAuthPasswordRepo.save(userPassword);
-  }
-
-  /**
-   * Проверяет почту и пароль пользователя и возвращает подходящего
-   * пользователя в случае успеха. В случае ошибки поднимается исключение
-   */
-  public async checkUserCredentials(emailOrLogin: string, password: string) {
-    const userAuthPassword = await this.userAuthPasswordRepo
-      .createQueryBuilder('uap')
-      .innerJoinAndSelect('uap.user', 'u')
-      .where('LOWER(u.email) = :email', { email: emailOrLogin.toLowerCase() })
-      .orWhere('u.login = :login', { login: emailOrLogin })
-      .getOne();
-    if (!userAuthPassword) {
-      throw new UnauthorizedException(`Provided credentials were invalid`);
-    }
-
-    const result = await this.checkPassword(password, userAuthPassword.hash);
-    if (!result) {
-      throw new UnauthorizedException(`Provided credentials were invalid`);
-    }
-
-    return userAuthPassword.user;
-  }
-
-  /**
-   * Использует долгосрочный токен доступа для аутентификации пользователя
-   */
-  public async useAuthToken(token: string) {
-    const userAuthToken = await this.findAuthToken(token);
-
-    const now = new Date();
-    if (
-      userAuthToken.expires_at &&
-      differenceInSeconds(userAuthToken.expires_at, now) >
-        refreshTokenReuseTimeout
-    ) {
-      userAuthToken.expires_at = addSeconds(now, refreshTokenReuseTimeout);
-      await this.userAuthTokenRepo.save(userAuthToken);
-    }
-
-    return userAuthToken.user;
-  }
-
-  public async findAuthToken(token: string) {
-    const userAuthToken = await this.userAuthTokenRepo.findOne({
-      where: {
-        token,
-        expires_at: MoreThan(new Date()),
-      },
-    });
-
-    if (!userAuthToken || !userAuthToken.user) {
-      throw new UnauthorizedException(`Provided token was invalid`);
-    }
-
-    return userAuthToken;
-  }
-
-  /**
-   * Возвращает хеш пароля
-   */
-  public async hashPassword(password: string) {
-    return bcrypt.hash(password, saltRounds);
-  }
-
-  /**
-   * Проверяет, что пароль соотносится с хешом
-   */
-  public async checkPassword(password: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(password, hash);
   }
 }

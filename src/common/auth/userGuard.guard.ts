@@ -1,14 +1,26 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  mixin,
+} from '@nestjs/common';
 import { Constructor } from '@nestjs/common/utils/merge-with-values.util';
 import { GqlExecutionContext, GraphQLExecutionContext } from '@nestjs/graphql';
 
-import { User } from '../../database/entities/user/entity/user.entity';
+import { User } from '../../database/entities/user/user.entity';
 
 export type UserGuardCheck = (
   user: User,
   ctx: GraphQLExecutionContext,
 ) => boolean;
 
+/**
+ * Guard, требующий, чтобы в GraphQL контексте был пользователь,
+ * который удовлетворяет заданному условию
+ *
+ * @param check
+ * @constructor
+ */
 export function UserGuard(check: UserGuardCheck): Constructor<CanActivate> {
   @Injectable()
   class UserCheckGuard implements CanActivate {
@@ -20,5 +32,5 @@ export function UserGuard(check: UserGuardCheck): Constructor<CanActivate> {
     }
   }
 
-  return UserCheckGuard;
+  return mixin(UserCheckGuard);
 }
