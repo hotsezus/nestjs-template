@@ -1,7 +1,19 @@
 import { isUndefined } from '@nestjs/common/utils/shared.utils';
-import { castArray as _castArray,intersection, isNil } from 'lodash';
+import { castArray as _castArray, intersection, isNil } from 'lodash';
 import { DeepPartial } from 'typeorm';
 
+export interface AnyObject {
+  [key: string]: any;
+}
+
+/**
+ * Если какой-то ключ объекта target равен null или undefined,
+ * то применяется значение соответствующего ключа из defaults.
+ * Мутирует объект target
+ *
+ * @param target - целевой объект
+ * @param defaults - значения по умолчанию
+ */
 export function applyDefaults<T>(target: T, defaults: Partial<T>): void {
   for (const key of Object.keys(defaults)) {
     if (isNil(target[key])) {
@@ -10,20 +22,16 @@ export function applyDefaults<T>(target: T, defaults: Partial<T>): void {
   }
 }
 
+/**
+ * Применяет изменения из changes в target (мутирует target)
+ *
+ * @param target - целевой объект
+ * @param changes - изменения
+ */
 export function applyChanges<T>(target: T, changes: Partial<T>): void {
   for (const field of Object.keys(changes)) {
     target[field] = changes[field];
   }
-}
-
-export function clean<T extends Record<string, unknown>>(obj: T): Partial<T> {
-  const result = { ...obj };
-  for (const key of Object.keys(obj)) {
-    if (obj[key] === undefined) {
-      delete result[key];
-    }
-  }
-  return result;
 }
 
 /**

@@ -14,8 +14,8 @@ import {
 import { customAlphabet } from 'nanoid';
 import { Logger } from 'nestjs-pino';
 
-import { tryGetJsonError } from '../utils/error';
-import { alphabetLowercaseId } from '../utils/string';
+import { tryGetJsonError } from '../../utils/error';
+import { alphabetLowercaseId } from '../../utils/string';
 
 const apolloPredefinedExceptions: Record<number, typeof ApolloError> = {
   401: AuthenticationError,
@@ -84,7 +84,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     return matches?.join('-') + '-' + this.generateErrorRandomCode();
   }
 
-  catch(exception: any, host: ArgumentsHost) {
+  processException(exception: any) {
     const isExpected = exception instanceof HttpException;
     const log = (message) =>
       isExpected ? this.logger.log(message) : this.logger.error(message);
@@ -100,6 +100,12 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     } else {
       log({ errorId, error: exception.message, exception });
     }
+
+    return { errorId, isExpected };
+  }
+
+  catch(exception: any, host: ArgumentsHost) {
+    const { errorId, isExpected } = this.processException(exception);
 
     // может быть полезно если БД предоставляется заказчиком
     // const isDbConnectionError =

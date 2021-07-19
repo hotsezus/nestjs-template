@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { RedisModule } from 'nest-module-redis';
 import { LoggerModule } from 'nestjs-pino';
 import { stdTimeFunctions } from 'pino';
 
 import { isProduction } from '../config/environment';
+import { redis } from '../config/redis';
 import { DatabaseModule } from '../database/database.module';
-import { AllExceptionsFilter } from './allExceptionsFilter';
+import { ExceptionsModule } from './exceptions/exceptions.module';
 import { QueuesModule } from './queues/queues.module';
 
 @Module({
@@ -23,14 +24,10 @@ import { QueuesModule } from './queues/queues.module';
         timestamp: stdTimeFunctions.isoTime,
       },
     }),
+    RedisModule.forRoot(redis),
     DatabaseModule,
     QueuesModule,
-  ],
-  providers: [
-    {
-      provide: APP_FILTER,
-      useClass: AllExceptionsFilter,
-    },
+    ExceptionsModule,
   ],
   exports: [DatabaseModule, LoggerModule],
 })

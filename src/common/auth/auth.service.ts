@@ -1,11 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { cleanObject } from '@proscom/ui-utils';
 
 import { JwtAccessPayload } from '../../config/jwt';
 import { User } from '../../database/entities/user/user.entity';
 import { UserService } from '../../database/entities/user/user.service';
 import { UserTokensService } from '../../database/entities/userTokens/userTokens.service';
-import { clean } from '../../utils/object';
 
 /**
  * Сервис аутентификации
@@ -44,7 +44,7 @@ export class AuthService {
       id: user.id,
     };
 
-    return this.jwtService.sign(payload, clean({ expiresIn: ttl }));
+    return this.jwtService.sign(payload, cleanObject({ expiresIn: ttl }));
   }
 
   /**

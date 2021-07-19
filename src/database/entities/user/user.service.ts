@@ -10,7 +10,7 @@ import { User } from './user.entity';
 import { UserPasswordsService } from './userPasswords.service';
 
 export class UserCreateArgs extends UserCommonFields {
-  password: string;
+  password?: string;
 }
 
 export class UserUpdateArgs extends UserCommonFields {
