@@ -17,14 +17,36 @@ export function fixErrorPrototype(error: Error) {
  * @param error - объект ошибки
  */
 export function getJsonError(error: any) {
-  if ('toJSON' in error && typeof error.toJSON === 'function') {
+  const result: Record<string, unknown> = {};
+
+  for (const prop of Object.getOwnPropertyNames(error)) {
+    if (prop !== 'stack') {
+      result[prop] = error[prop];
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Возвращает представление ошибки в виде простого объекта.
+ * Полезно для сериализации в JSON.
+ * Пытается вызвать error.toJSON()
+ *
+ * @param error - объект ошибки
+ */
+export function tryGetJsonError(error: any) {
+  if (error.toJSON && typeof error.toJSON === 'function') {
     return error.toJSON();
   }
 
   const result: Record<string, unknown> = {};
 
   for (const prop of Object.getOwnPropertyNames(error)) {
-    result[prop] = error[prop];
+    // В контексте использования этой функции поле stack обрабатывается отдельно
+    if (prop !== 'stack') {
+      result[prop] = error[prop];
+    }
   }
 
   return result;
@@ -40,5 +62,8 @@ export class CustomError extends Error {
   constructor(message) {
     super(message);
     fixErrorPrototype(this);
+  }
+  toJSON() {
+    return getJsonError(this);
   }
 }

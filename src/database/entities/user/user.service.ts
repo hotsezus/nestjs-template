@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 
 import { applyChanges } from '../../../utils/object';
-import { exceptionDuplicateKey } from '../../../utils/sqlErors';
+import { tryCatchSqlErrors } from '../../../utils/sqlErors';
 import { UserCommonFields } from './user.common-fields';
 import { User } from './user.entity';
 import { UserPasswordsService } from './userPasswords.service';
@@ -30,22 +30,19 @@ export class UserService {
    * Создает пользователя с заданными параметрами
    */
   public async createUser(params: UserCreateArgs) {
-    try {
-      const { password, ...userData } = params;
-      const user = new User();
+    const { password, ...userData } = params;
+    const user = new User();
 
-      applyChanges(user, userData);
-      const result = await this.userRepo.save(user);
+    applyChanges(user, userData);
+    const result = await tryCatchSqlErrors(() => {
+      return this.userRepo.save(user);
+    });
 
-      if (password) {
-        await this.userPasswordsService.changeUserPassword(result, password);
-      }
-
-      return result;
-    } catch (e) {
-      exceptionDuplicateKey(e);
-      throw e;
+    if (password) {
+      await this.userPasswordsService.changeUserPassword(result, password);
     }
+
+    return result;
   }
 
   public async updateUser(params: UserUpdateArgs) {
@@ -59,14 +56,9 @@ export class UserService {
 
     applyChanges(existingUser, userParams);
 
-    const result = await (async () => {
-      try {
-        return await this.userRepo.save(existingUser);
-      } catch (e) {
-        exceptionDuplicateKey(e);
-        throw e;
-      }
-    })();
+    const result = await tryCatchSqlErrors(() => {
+      return this.userRepo.save(existingUser);
+    });
 
     if (new_password) {
       await this.userPasswordsService.changeUserPassword(result, new_password);

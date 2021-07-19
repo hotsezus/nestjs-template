@@ -12,10 +12,7 @@ export class DuplicateKeyException extends UnprocessableEntityException {
     fixErrorPrototype(this);
   }
   toJSON() {
-    return {
-      ...getJsonError(this),
-      field: this.field,
-    };
+    return getJsonError(this);
   }
 }
 
@@ -34,11 +31,7 @@ export class RelationNotFoundException extends UnprocessableEntityException {
     fixErrorPrototype(this);
   }
   toJSON() {
-    return {
-      ...getJsonError(this),
-      field: this.field,
-      table: this.table,
-    };
+    return getJsonError(this);
   }
 }
 
@@ -68,7 +61,7 @@ export class RelationNotFoundException extends UnprocessableEntityException {
  *   throw e;
  * }
  */
-export const exceptionDuplicateKey = (e) => {
+export function exceptionDuplicateKey(e) {
   const match =
     e.name === 'QueryFailedError' &&
     e.detail.match(/Key \((\w+)\)=\(.+?\) already exists./);
@@ -76,7 +69,7 @@ export const exceptionDuplicateKey = (e) => {
     const field = match[1];
     throw new DuplicateKeyException(field);
   }
-};
+}
 
 /**
  * Проверяет, что ошибка PostgreSQL является ошибкой отсутствия внешнего ключа.
@@ -104,7 +97,7 @@ export const exceptionDuplicateKey = (e) => {
  *   throw e;
  * }
  */
-export const exceptionRelationNotFound = (e) => {
+export function exceptionRelationNotFound(e) {
   const match =
     e.name === 'QueryFailedError' &&
     e.detail.match(/Key \((\w+)\)=\(.+?\) is not present in table "(\w+)"./);
@@ -113,4 +106,21 @@ export const exceptionRelationNotFound = (e) => {
     const table = match[2];
     throw new RelationNotFoundException(field, table);
   }
-};
+}
+
+/**
+ * Выполняет функцию cb и если выбрасывается поддерживаемая ошибка SQL,
+ * то перевыбрасывает её в более удобном виде.
+ * Все остальные ошибки выбрасываются без изменений.
+ *
+ * @param cb - функция для выполнения, которая может выбросить QueryFailedError
+ */
+export async function tryCatchSqlErrors<T>(cb: () => Promise<T>): Promise<T> {
+  try {
+    return await cb();
+  } catch (e) {
+    exceptionDuplicateKey(e);
+    exceptionRelationNotFound(e);
+    throw e;
+  }
+}

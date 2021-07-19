@@ -14,6 +14,7 @@ import {
 import { customAlphabet } from 'nanoid';
 import { Logger } from 'nestjs-pino';
 
+import { tryGetJsonError } from '../utils/error';
 import { alphabetLowercaseId } from '../utils/string';
 
 const apolloPredefinedExceptions: Record<number, typeof ApolloError> = {
@@ -37,8 +38,7 @@ function processApolloError(exception: Error) {
   }
 
   error.stack = exception.stack;
-  error.extensions['response'] = exception.getResponse();
-  error.errorId = (exception as any).errorId;
+  error.extensions['exception'] = tryGetJsonError(exception);
 
   return error;
 }
@@ -91,9 +91,14 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     const errorId = this.generateErrorId();
 
     if (typeof exception.stack !== 'undefined') {
-      log({ errorId, error: exception.message, stack: exception.stack });
+      log({
+        errorId,
+        error: exception.message,
+        stack: exception.stack,
+        exception,
+      });
     } else {
-      log({ errorId, error: exception.message });
+      log({ errorId, error: exception.message, exception });
     }
 
     // может быть полезно если БД предоставляется заказчиком
