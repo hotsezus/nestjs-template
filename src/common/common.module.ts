@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 import { stdTimeFunctions } from 'pino';
 
 import { isProduction } from '../config/environment';
 import { DatabaseModule } from '../database/database.module';
+import { AllExceptionsFilter } from './allExceptionsFilter';
 import { QueuesModule } from './queues/queues.module';
 
 @Module({
@@ -23,6 +25,12 @@ import { QueuesModule } from './queues/queues.module';
     }),
     DatabaseModule,
     QueuesModule,
+  ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
   ],
   exports: [DatabaseModule, LoggerModule],
 })
