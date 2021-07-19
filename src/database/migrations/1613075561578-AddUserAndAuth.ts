@@ -17,7 +17,7 @@ export class AddUserAndAuth1613075561578 implements MigrationInterface {
       `CREATE TYPE "users_role_enum" AS ENUM('DEFAULT', 'ADMIN')`,
     );
     await queryRunner.query(
-      `CREATE TABLE "users" ("login" character varying(255), "email" character varying(255), "name" character varying(255), "role" "users_role_enum" NOT NULL DEFAULT 'DEFAULT', "id" SERIAL NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT now(), "creator_user_id" integer, CONSTRAINT "UQ_2d443082eccd5198f95f2a36e2c" UNIQUE ("login"), CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "users" ("id" SERIAL NOT NULL, "login" character varying(255), "email" character varying(255), "name" character varying(255), "role" "users_role_enum" NOT NULL DEFAULT 'DEFAULT', "created_at" TIMESTAMP WITH TIME ZONE DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT now(), "creator_user_id" integer, CONSTRAINT "UQ_2d443082eccd5198f95f2a36e2c" UNIQUE ("login"), CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `ALTER TABLE "user_auth_passwords" ADD CONSTRAINT "FK_63d7993e81a151ec988e6f9bd47" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
