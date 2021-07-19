@@ -41,6 +41,7 @@ module.exports = {
             'ts-ignore': 'allow-with-description',
           },
         ],
+        '@typescript-eslint/no-empty-interface': 0,
       },
     },
   ],

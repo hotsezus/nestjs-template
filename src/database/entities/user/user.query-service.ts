@@ -17,7 +17,7 @@ import { User } from './user.entity';
 /**
  * Возможные фильтры для запроса списка пользователей
  */
-export interface UserFilter {
+export interface IUserFilter {
   /**
    * ID пользователей
    */
@@ -54,7 +54,7 @@ export class UserQueryService {
    */
   createBaseQuery(
     alias = 'users',
-    filter?: UserFilter,
+    filter?: IUserFilter,
     sortings?: BasicSorting[],
   ) {
     const queryBuilder = this.usersRepo.createQueryBuilder(alias);
@@ -74,10 +74,10 @@ export class UserQueryService {
   applyFilters(
     queryBuilder: SelectQueryBuilder<User>,
     alias = 'users',
-    filter?: UserFilter,
+    filter?: IUserFilter,
   ) {
     const { ids, exclude_ids, search, creator_user_ids } =
-      filter || ({} as UserFilter);
+      filter || ({} as IUserFilter);
 
     const users = tableAlias(alias);
 

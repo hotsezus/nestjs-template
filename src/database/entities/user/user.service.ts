@@ -3,14 +3,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 
-import {
-  UserCreateInput,
-  UserUpdateInput,
-} from '../../../graphql/user/user.input';
 import { applyChanges } from '../../../utils/object';
 import { exceptionDuplicateKey } from '../../../utils/sqlErors';
+import { UserCommonFields } from './user.common-fields';
 import { User } from './user.entity';
 import { UserPasswordsService } from './userPasswords.service';
+
+export class UserCreateArgs extends UserCommonFields {
+  password: string;
+}
+
+export class UserUpdateArgs extends UserCommonFields {
+  id: number;
+  new_password?: string;
+}
 
 @Injectable()
 export class UserService {
@@ -23,24 +29,26 @@ export class UserService {
   /**
    * Создает пользователя с заданными параметрами
    */
-  public async createUser(params: UserCreateInput) {
+  public async createUser(params: UserCreateArgs) {
     try {
       const { password, ...userData } = params;
       const user = new User();
 
+      applyChanges(user, userData);
+      const result = await this.userRepo.save(user);
+
       if (password) {
-        await this.userPasswordsService.changeUserPassword(user, password);
+        await this.userPasswordsService.changeUserPassword(result, password);
       }
 
-      applyChanges(user, userData);
-      return this.userRepo.save(user);
+      return result;
     } catch (e) {
       exceptionDuplicateKey(e);
       throw e;
     }
   }
 
-  public async updateUser(params: UserUpdateInput) {
+  public async updateUser(params: UserUpdateArgs) {
     const existingUser = await this.getById(params.id);
 
     if (!existingUser) {
@@ -49,21 +57,22 @@ export class UserService {
 
     const { new_password, ...userParams } = params;
 
-    if (new_password) {
-      await this.userPasswordsService.changeUserPassword(
-        existingUser,
-        new_password,
-      );
-    }
-
     applyChanges(existingUser, userParams);
 
-    try {
-      return await this.userRepo.save(existingUser);
-    } catch (e) {
-      exceptionDuplicateKey(e);
-      throw e;
+    const result = await (async () => {
+      try {
+        return await this.userRepo.save(existingUser);
+      } catch (e) {
+        exceptionDuplicateKey(e);
+        throw e;
+      }
+    })();
+
+    if (new_password) {
+      await this.userPasswordsService.changeUserPassword(result, new_password);
     }
+
+    return result;
   }
 
   async deleteUser(id: number): Promise<DeleteResult> {

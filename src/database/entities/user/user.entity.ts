@@ -44,6 +44,8 @@ export class User extends UserFields {
   @BeforeInsert()
   @BeforeUpdate()
   convertEmailToLowercase() {
-    this.email = this.email && this.email.toLowerCase();
+    if (this.email) {
+      this.email = this.email.toLowerCase();
+    }
   }
 }

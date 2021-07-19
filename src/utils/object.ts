@@ -1,5 +1,5 @@
-import { isNil, isUndefined } from '@nestjs/common/utils/shared.utils';
-import { intersection } from 'lodash';
+import { isUndefined } from '@nestjs/common/utils/shared.utils';
+import { castArray as _castArray,intersection, isNil } from 'lodash';
 import { DeepPartial } from 'typeorm';
 
 export function applyDefaults<T>(target: T, defaults: Partial<T>): void {
@@ -145,4 +145,18 @@ export function isObjectChanged<T>(
     }
   }
   return false;
+}
+
+/**
+ * Конвертирует значение в массив, возвращая undefined для null и undefined
+ */
+export function valueToArray<T>(value?: T | null): readonly [T] | undefined {
+  return !isNil(value) ? ([value] as const) : undefined;
+}
+
+/**
+ * Конвертирует значение в массив, возвращая [] для null и undefined
+ */
+export function castArray<T>(something: T | T[] | null | undefined): T[] {
+  return isNil(something) ? [] : _castArray(something);
 }

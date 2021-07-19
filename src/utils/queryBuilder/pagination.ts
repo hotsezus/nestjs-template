@@ -1,6 +1,11 @@
 import { tryNumber } from '@proscom/ui-utils';
 import { SelectQueryBuilder } from 'typeorm';
 
+export interface SkipTakeOptions {
+  skip?: number;
+  take?: number;
+}
+
 /**
  * Информация о пагинации запроса
  */
@@ -30,7 +35,7 @@ export interface PaginationHeader {
  * @param skip
  * @param take
  */
-export function getHeader({
+function getHeader({
   totalCount,
   skip,
   take,
@@ -60,7 +65,7 @@ export function getHeader({
  * @param hasHeader - запрашивается ли заголовок пагинации
  * @param options - параметры пагинации - skip и take
  */
-export async function getPage<T>({
+export async function getQueryPage<T>({
   query,
   hasList,
   hasHeader,
@@ -69,13 +74,10 @@ export async function getPage<T>({
   query?: SelectQueryBuilder<any> | null;
   hasList?: boolean;
   hasHeader?: boolean;
-  options: {
-    skip?: number;
-    take?: number;
-  };
+  options: SkipTakeOptions;
 }) {
   let totalCount: number | undefined;
-  let list: T[] | undefined;
+  let list: T[] = [];
 
   if (query) {
     if (hasList && hasHeader) {
