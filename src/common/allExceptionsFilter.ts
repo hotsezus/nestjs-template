@@ -14,7 +14,6 @@ import {
 import { customAlphabet } from 'nanoid';
 import { Logger } from 'nestjs-pino';
 
-import { typeormHost, typeormPort } from '../config/ormconfig';
 import { alphabetLowercaseId } from '../utils/string';
 
 const apolloPredefinedExceptions: Record<number, typeof ApolloError> = {

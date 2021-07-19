@@ -1,5 +1,4 @@
 import { tryNumber } from '@proscom/ui-utils';
-import path from 'path';
 
 import { booleanEnv } from './tools';
 

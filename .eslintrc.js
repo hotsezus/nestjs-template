@@ -8,7 +8,7 @@ module.exports = {
     sourceType: 'module',
   },
   ignorePatterns: ['.eslintrc.js'],
-  plugins: ['import', 'simple-import-sort'],
+  plugins: ['import', 'simple-import-sort', 'unused-imports'],
   rules: {
     // Сортировка и группировка импортов и экспортов
     'simple-import-sort/imports': 1,
@@ -17,6 +17,7 @@ module.exports = {
     'import/first': 1,
     'import/newline-after-import': 1,
     'import/no-duplicates': 1,
+    'unused-imports/no-unused-imports': 1,
   },
   overrides: [
     {

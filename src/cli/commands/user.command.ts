@@ -8,7 +8,6 @@ import { UserRolesEnum } from '../../database/entities/user/user.common-fields';
 import { User } from '../../database/entities/user/user.entity';
 import { UserService } from '../../database/entities/user/user.service';
 import { UserPasswordsService } from '../../database/entities/user/userPasswords.service';
-import { valueToArray } from '../../utils/object';
 import { parseNull } from '../../utils/string';
 
 const rolesArray = Object.keys(UserRolesEnum).map((key) => {

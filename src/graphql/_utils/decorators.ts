@@ -1,4 +1,4 @@
-import { Extensions, Field, ID } from '@nestjs/graphql';
+import { Field, ID } from '@nestjs/graphql';
 import { FieldOptions } from '@nestjs/graphql/dist/decorators/field.decorator';
 
 export function IdField(options?: FieldOptions): PropertyDecorator {
