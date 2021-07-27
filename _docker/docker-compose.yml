@@ -4,9 +4,9 @@ services:
     ports:
       - ${DB_BIND}:5432
     environment:
-      POSTGRES_USER: template_user
+      POSTGRES_USER: template
       POSTGRES_PASSWORD: 12345678
-      POSTGRES_DB: template_database
+      POSTGRES_DB: template
     volumes:
       - db_data:/var/lib/postgresql/data
   redis:
@@ -18,9 +18,7 @@ services:
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
       - redis_data:/data
   plantuml-server:
-    build:
-      context: .
-      dockerfile: ./plantuml-server/Dockerfile
+    image: plantuml/plantuml-server:tomcat
     ports:
       - ${PLANTUML_BIND}:8080
 

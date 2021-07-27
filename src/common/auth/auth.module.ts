@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 
 import { jwtExpiration, jwtSecretKey } from '../../config/jwt';
 import { UserModule } from '../../database/entities/user/user.module';
+import { UserTokensModule } from '../../database/entities/userTokens/userTokens.module';
 import { AuthService } from './auth.service';
 import { JwtStrategy, STRATEGY_JWT } from './jwtStrategy.service';
 
@@ -20,6 +21,7 @@ import { JwtStrategy, STRATEGY_JWT } from './jwtStrategy.service';
       },
     }),
     UserModule,
+    UserTokensModule,
   ],
   providers: [AuthService, JwtStrategy],
   exports: [AuthService, JwtModule],

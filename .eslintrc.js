@@ -8,7 +8,7 @@ module.exports = {
     sourceType: 'module',
   },
   ignorePatterns: ['.eslintrc.js'],
-  plugins: ['import', 'simple-import-sort'],
+  plugins: ['import', 'simple-import-sort', 'unused-imports'],
   rules: {
     // Сортировка и группировка импортов и экспортов
     'simple-import-sort/imports': 1,
@@ -17,6 +17,7 @@ module.exports = {
     'import/first': 1,
     'import/newline-after-import': 1,
     'import/no-duplicates': 1,
+    'unused-imports/no-unused-imports': 1,
   },
   overrides: [
     {
@@ -35,6 +36,13 @@ module.exports = {
         '@typescript-eslint/interface-name-prefix': 0,
         '@typescript-eslint/explicit-function-return-type': 0,
         '@typescript-eslint/explicit-module-boundary-types': 0,
+        '@typescript-eslint/ban-ts-comment': [
+          1,
+          {
+            'ts-ignore': 'allow-with-description',
+          },
+        ],
+        '@typescript-eslint/no-empty-interface': 0,
       },
     },
   ],

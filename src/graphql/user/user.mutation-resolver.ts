@@ -11,6 +11,9 @@ import { UserType } from './user.type';
 export class UserMutationResolver {
   constructor(private readonly userService: UserService) {}
 
+  /**
+   * Создаёт нового пользователя
+   */
   @Mutation(() => UserType)
   async createUser(
     @Args({
@@ -22,6 +25,9 @@ export class UserMutationResolver {
     return this.userService.createUser(input);
   }
 
+  /**
+   * Обновляет пользователя
+   */
   @Mutation(() => UserType)
   async updateUser(
     @Args({
@@ -33,6 +39,9 @@ export class UserMutationResolver {
     return this.userService.updateUser(input);
   }
 
+  /**
+   * Удаляет пользователя
+   */
   @Mutation(() => Boolean)
   async deleteUser(
     @Args({ name: 'id', type: () => ID }) id: number,

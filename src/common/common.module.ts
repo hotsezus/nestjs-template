@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
-import { LoggerModule } from 'nestjs-pino/dist';
+import { RedisModule } from 'nest-module-redis';
+import { LoggerModule } from 'nestjs-pino';
 import { stdTimeFunctions } from 'pino';
 
 import { isProduction } from '../config/environment';
+import { redis } from '../config/redis';
 import { DatabaseModule } from '../database/database.module';
+import { ExceptionsModule } from './exceptions/exceptions.module';
 import { QueuesModule } from './queues/queues.module';
 
 @Module({
@@ -21,8 +24,10 @@ import { QueuesModule } from './queues/queues.module';
         timestamp: stdTimeFunctions.isoTime,
       },
     }),
+    RedisModule.forRoot(redis),
     DatabaseModule,
     QueuesModule,
+    ExceptionsModule,
   ],
   exports: [DatabaseModule, LoggerModule],
 })

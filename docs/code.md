@@ -61,7 +61,14 @@
 
    * Поля, недоступные в GraphQL типах, но необходимые в ORM сущности, должны быть в `user.entity.ts`
 
-**_todo: описать связь классов сущности между собой (картинкой)_**
+```
+                                    @InputType
+@Entity        @ObjectType          @ObjectType
+User     <---- UserFields     <---  UserCommonFields
+                 ^                    ^               ^
+               @ObjectType          @InputType        @InputType
+               UserType             UserCreateInput   UserUpdateInput
+```
 
 ---
 
@@ -69,16 +76,20 @@
 
 Описание основных директорий:
 
-1. `bin` - входные точки для запуска проекта в разных режимах
+- `bin` - входные точки для запуска проекта в разных режимах
 
-2. `cli` - CommandsModule, импортирующий cli команды из `cli/commands`
+- `cli` - CommandsModule, импортирующий cli команды из `cli/commands`
 
-3. `common` - CommonModule и импортированные в него модули. Содержит весь код, который обычно нужен проекту вне зависимости от режима работы
+- `common` - CommonModule и импортированные в него модули. Содержит весь код, который обычно нужен проекту вне зависимости от режима работы
 
-4. `config` - директория с typescript файлами описывающими параметры разных модулей системы
+- `config` - директория с typescript файлами описывающими параметры разных модулей системы
 
-5. `database` - DatabaseModule, импортирующий модули всех ORM сущностей. Также содержит директорию `migrations`, содержащую в себе сгенерированные файлы миграций базы данных
+- `database` - DatabaseModule, импортирующий модули всех ORM сущностей. Также содержит директорию `migrations`, содержащую в себе файлы миграций базы данных, сгенерированные TypeORM CLI
 
-6. `graphql` - AppGraphqlModule, импортирующий модули всех GraphQL типов
+- `graphql` - AppGraphqlModule, импортирующий модули всех GraphQL типов
 
-7. `worker` - ProcessorsModule, импортирующий исполнителей задач очередей из `worker/processors`
+- `scheduler` - AppSchedulerModule, импортирующий все необходимые задачи, выполняемые по расписанию
+
+- `utils` - директория (не модуль), содержащая чистые утилитарные функции и классы, не использующие модульность NestJS
+
+- `worker` - ProcessorsModule, импортирующий исполнителей задач очередей из `worker/processors`
