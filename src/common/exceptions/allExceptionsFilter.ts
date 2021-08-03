@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { GqlArgumentsHost, GqlContextType } from '@nestjs/graphql';
+import { tryGetJsonError } from '@proscom/ui-utils';
 import {
   ApolloError,
   AuthenticationError,
@@ -14,7 +15,6 @@ import {
 import { customAlphabet } from 'nanoid';
 import { Logger } from 'nestjs-pino';
 
-import { tryGetJsonError } from '../../utils/error';
 import { alphabetLowercaseId } from '../../utils/string';
 
 const apolloPredefinedExceptions: Record<number, typeof ApolloError> = {

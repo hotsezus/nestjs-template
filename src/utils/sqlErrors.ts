@@ -1,6 +1,5 @@
 import { UnprocessableEntityException } from '@nestjs/common';
-
-import { fixErrorPrototype, getJsonError } from './error';
+import { fixErrorPrototype, getJsonError } from '@proscom/ui-utils';
 
 /**
  * Ошибка нарушения уникального ключа при вставке или обновлении данных

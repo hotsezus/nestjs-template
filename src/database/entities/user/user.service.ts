@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 
 import { applyChanges } from '../../../utils/object';
-import { tryCatchSqlErrors } from '../../../utils/sqlErors';
+import { tryCatchSqlErrors } from '../../../utils/sqlErrors';
 import { UserCommonFields } from './user.common-fields';
 import { User } from './user.entity';
 import { UserPasswordsService } from './userPasswords.service';

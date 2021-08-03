@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { defaultOptions } from '@nestjs/passport/dist/options';
+import { CustomError } from '@proscom/ui-utils';
 import { Request, Response } from 'express';
 import { nanoid } from 'nanoid';
 import { Repository } from 'typeorm';
@@ -32,7 +33,6 @@ import {
   SocialProviderEnum,
   UserSocial,
 } from '../../../database/entities/userSocial/userSocial.entity';
-import { CustomError } from '../../../utils/error';
 import { AnyObject } from '../../../utils/object';
 import { addWhereInSubquery } from '../../../utils/queryBuilder/builderWhere';
 import { createPassportContext } from './createPassportContext';

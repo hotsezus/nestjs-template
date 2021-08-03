@@ -648,12 +648,14 @@
     open "7.0.4"
     yargs "15.3.1"
 
-"@proscom/ui-utils@^0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@proscom/ui-utils/-/ui-utils-0.1.12.tgz#48bc50959bb3fc5ad0c0cf4ba1100e9e0edc0daa"
-  integrity sha512-2EjPzeyxRRzu/pMmPKYlqym/b1z6ipaNhd3O6Mlc+UvjFkmCZS6Pv7f87OyM3sDs4+KjPrAJJYIMLmXe52BgCQ==
+"@proscom/ui-utils@^0.1.15":
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/@proscom/ui-utils/-/ui-utils-0.1.15.tgz#e26f18ad0245918dbe1abdeb3023b22e07a1ac11"
+  integrity sha512-78MZWvgN+SwalUD/wqtgV50Da6yqgfd5ui5/6Cf4jL/igI/N1vAnJ5V9Z6nacCgutjxV2wTsQbvi0GMQ5wzgyw==
   dependencies:
+    async "^3.0.0"
     lodash "^4.0.0"
+    tslib "^2.0.0"
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
@@ -1776,6 +1778,11 @@ async@0.9.x:
   version "0.9.2"
   resolved "https://registry.yarnpkg.com/async/-/async-0.9.2.tgz#aea74d5e61c1f899613bf64bda66d4c78f2fd17d"
   integrity sha1-rqdNXmHB+JlhO/ZL2mbUx48v0X0=
+
+async@^3.0.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/async/-/async-3.2.0.tgz#b3a2685c5ebb641d3de02d161002c60fc9f85720"
+  integrity sha512-TR2mEZFVOj2pLStYxLht7TyfuRzaydfpxr3k9RpHIzMgw7A64dzsdqCxH1WJyQdoe8T10nDXd9wnEigmiuHIZw==
 
 asynckit@^0.4.0:
   version "0.4.0"
