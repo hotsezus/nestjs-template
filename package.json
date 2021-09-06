@@ -16,7 +16,7 @@
     "build:diagram": "cross-env TYPEORM_BASE_DIRECTORY=src ts-node src/bin/plantuml.ts",
     "start": "nest start",
     "start:dev": "nest start --debug --watch",
-    "start:prod": "cross-env NODE_ENV=production node dist/bin/app",
+    "start:prod": "cross-env NODE_ENV=production node dist/bin/api",
     "cli": "cross-env TYPEORM_BASE_DIRECTORY=src node -r tsconfig-paths/register -r ts-node/register src/bin/cli.ts",
     "cli:dev": "cross-env TYPEORM_BASE_DIRECTORY=src node --inspect -r ts-node/register src/bin/cli.ts",
     "cli:prod": "cross-env NODE_ENV=production node dist/bin/cli.js",
