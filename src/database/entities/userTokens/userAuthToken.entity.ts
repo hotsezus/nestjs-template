@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 
 import { User } from '../user/user.entity';
-import { UserAuthTokenFields } from './userAuthTokenFields';
+import { UserAuthTokenFields } from './userAuthToken.fields';
 
 /**
  * Модель системных токенов пользователя

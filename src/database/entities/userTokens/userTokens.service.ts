@@ -11,7 +11,7 @@ import {
 } from '../../../config/jwt';
 import { User } from '../user/user.entity';
 import { UserAuthToken } from './userAuthToken.entity';
-import { TokenType } from './userAuthTokenFields';
+import { TokenType } from './userAuthToken.fields';
 
 @Injectable()
 export class UserTokensService {
