@@ -72,6 +72,7 @@ export class UserTokensService {
         token,
         expires_at: MoreThan(new Date()),
       },
+      relations: ['user'],
     });
 
     if (!userAuthToken || !userAuthToken.user) {
