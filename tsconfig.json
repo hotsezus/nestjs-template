@@ -10,7 +10,10 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strictNullChecks": true,
+    "strict": true,
+    "noImplicitAny": false,
+    /** Эта штука конфликтует с class-validator, поэтому отключаем, чтобы не писать везде `!` */
+    "strictPropertyInitialization": false,
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",

@@ -56,7 +56,7 @@ module.exports = {
         '@typescript-eslint/strict-boolean-expressions': [
           1,
           {
-            allowNumber: false,
+            allowNumber: true,
             allowNullableBoolean: true,
             allowNullableString: true,
             allowAny: true,
