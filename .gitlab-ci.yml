@@ -1,0 +1,75 @@
+image: node:14
+
+variables:
+  NODE_ENV: production
+
+stages:
+  - build
+  - deploy
+
+build:
+  only:
+    - master
+    - production
+    - merge_requests
+  stage: build
+# В нашем гитлаб-сетапе он не работает
+#  cache:
+#    key: "$CI_COMMIT_REF_SLUG"
+#    paths:
+#      - node_modules
+  script:
+    - yarn install --production=false
+    - yarn run build
+  artifacts:
+    name: "$CI_COMMIT_REF_SLUG-$CI_JOB_NAME"
+    paths:
+      - dist
+      - src
+      - .env.example
+      - .eslintrc.js
+      - .prettierignore
+      - .prettierrc.json
+      - nest-cli.json
+      - package.json
+      - pm2.config.js
+      - README.md
+      - schema.gql
+      - tsconfig.build.json
+      - tsconfig.json
+      - yarn.lock
+
+.base-deploy-script: &base-deploy-script
+  - DATE=$(date +"%Y%m%d_%H%M%S")
+  - echo "date '${DATE}'"
+  - ARCHIVE=${CI_COMMIT_REF_SLUG}-${DATE}.tgz
+  - echo "archive name '${ARCHIVE}'"
+  - tar -czf ${ARCHIVE} *
+  - TARGET=${SSH_TARGET}:${APP_FOLDER}/archives/${ARCHIVE}
+  - echo "Uploading archive to target ${TARGET}"
+  - echo "scp ${SCP_ARGS} ${ARCHIVE} ${TARGET}"
+  - eval "scp ${SCP_ARGS} ${ARCHIVE} ${TARGET}"
+  - echo "ssh ${SSH_ARGS} ${SSH_TARGET}"
+  - eval "ssh ${SSH_ARGS} ${SSH_TARGET} \"cd ${APP_FOLDER} && ./ci-deploy.sh ${ARCHIVE}\""
+
+.base-deploy:
+  stage: deploy
+  script:
+    - *base-deploy-script
+  before_script:
+    - 'which ssh-agent || ( apt-get update -qq && apt-get install -qq openssh-client )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
+# @see https://gitlab.com/proscom/guide/-/blob/master/infra/ci.md
+#
+#deploy-staging:
+#  extends: .base-deploy
+#  only:
+#    - master
+#  environment:
+#    name: staging
+#    url: <STAGING_URL>
