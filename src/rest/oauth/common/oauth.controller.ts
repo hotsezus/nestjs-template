@@ -41,7 +41,7 @@ import { OAuthProfile } from './oauthProfile';
 class DisplayableError extends CustomError {}
 
 class WrappedError extends DisplayableError {
-  constructor(message: string, protected readonly originalError: Error) {
+  constructor(message: string, protected readonly originalError: any) {
     super(message);
   }
 }
