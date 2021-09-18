@@ -49,7 +49,8 @@
 
       * `@ObjectType` и/или `@InputType` декораторы с параметром `isAbstract: true`
       * abstract класс
-   
+
+Обратите внимание на гайдлайны по [именованию абстракций в Nestjs](https://gitlab.com/proscom/guide/-/blob/master/nestjs/naming.md).   
 
 ### Пример сущности
 
