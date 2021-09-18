@@ -12,7 +12,9 @@ import { ApiModule } from '../api.module';
 import { appHost, appPort, jsonLimit } from '../config/environment';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(ApiModule);
+  const app = await NestFactory.create<NestExpressApplication>(ApiModule, {
+    bufferLogs: true,
+  });
 
   app.useGlobalPipes(new ValidationPipe());
   app.use(json({ limit: jsonLimit }));
