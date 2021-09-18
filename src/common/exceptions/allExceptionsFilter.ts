@@ -6,42 +6,10 @@ import {
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { GqlArgumentsHost, GqlContextType } from '@nestjs/graphql';
-import { tryGetJsonError } from '@proscom/ui-utils';
-import {
-  ApolloError,
-  AuthenticationError,
-  ForbiddenError,
-} from 'apollo-server-express';
 import { customAlphabet } from 'nanoid';
 import { Logger } from 'nestjs-pino';
 
 import { alphabetLowercaseId } from '../../utils/string';
-
-const apolloPredefinedExceptions: Record<number, typeof ApolloError> = {
-  401: AuthenticationError,
-  403: ForbiddenError,
-};
-
-/**
- * @see https://github.com/nestjs/graphql/pull/1292
- */
-function processApolloError(exception: Error) {
-  if (!(exception instanceof HttpException)) return exception;
-
-  const status = exception.getStatus();
-
-  let error: ApolloError;
-  if (status in apolloPredefinedExceptions) {
-    error = new apolloPredefinedExceptions[status](exception.message);
-  } else {
-    error = new ApolloError(exception.message, status.toString());
-  }
-
-  error.stack = exception.stack;
-  error.extensions['exception'] = tryGetJsonError(exception);
-
-  return error;
-}
 
 /**
  * Глобальный обработчик ошибок всего приложения.
@@ -62,7 +30,6 @@ function processApolloError(exception: Error) {
  * К первому типу относятся исключения, расширяющие класс HttpException.
  *
  * Первый тип исключений выбрасывается дальше и силами nestjs возвращается во фронтенд.
- * Дополнительно обрабатываются ошибки 401 и 403, чтобы вернуть корректный код ошибки Apollo.
  *
  * Вместо второго типа исключений в nestjs передаётся InternalServerError,
  * который возвращается на фронтенд без какой-либо информации, чтобы не нанести
@@ -140,7 +107,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     }
 
     if (GqlArgumentsHost.create(host).getType<GqlContextType>() === 'graphql') {
-      return processApolloError(error);
+      return error;
     } else {
       return super.catch(error, host);
     }
