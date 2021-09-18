@@ -13,6 +13,7 @@ import { appHost, appPort, jsonLimit } from '../config/environment';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(ApiModule, {
+    // @see https://github.com/iamolegga/nestjs-pino#v2
     bufferLogs: true,
   });
 
