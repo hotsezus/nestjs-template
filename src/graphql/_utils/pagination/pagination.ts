@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
-import getFieldNames from 'graphql-list-fields';
+import { fieldsList } from 'graphql-fields-list';
 import { SelectQueryBuilder } from 'typeorm';
 import { FindOptionsUtils } from 'typeorm/find-options/FindOptionsUtils';
 
@@ -18,7 +18,7 @@ import { PaginationInput } from './pagination.input';
  */
 export function tryGetFieldNames(info: GraphQLResolveInfo): string[] {
   try {
-    return getFieldNames(info);
+    return fieldsList(info);
   } catch (e) {
     return [];
   }
