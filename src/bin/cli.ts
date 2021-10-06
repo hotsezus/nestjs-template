@@ -7,9 +7,17 @@ import { Logger } from 'nestjs-pino';
 import { CliModule } from '../cli.module';
 
 async function bootstrap() {
-  const app = await NestFactory.createApplicationContext(CliModule);
+  const app = await NestFactory.createApplicationContext(CliModule, {
+    bufferLogs: true,
+  });
+
   app.useLogger(app.get(Logger));
-  app.select(CommandModule).get(CommandService).exec();
+  app.flushLogs();
+
+  await app.select(CommandModule).get(CommandService).exec();
+  await app.close();
+
+  process.exit();
 }
 
 bootstrap().catch((e) => console.error(`Uncaught error`, e));
