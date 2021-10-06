@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { fieldsList } from 'graphql-fields-list';
+import { fieldsProjection } from 'graphql-fields-list';
 import { SelectQueryBuilder } from 'typeorm';
 import { FindOptionsUtils } from 'typeorm/find-options/FindOptionsUtils';
 
@@ -18,7 +18,8 @@ import { PaginationInput } from './pagination.input';
  */
 export function tryGetFieldNames(info: GraphQLResolveInfo): string[] {
   try {
-    return fieldsList(info);
+    const projection = fieldsProjection(info);
+    return Object.keys(projection);
   } catch (e) {
     return [];
   }
