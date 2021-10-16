@@ -1,12 +1,12 @@
 import { NotFoundException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
-import { GraphqlAuthGuard } from '../../../_guards/graphqlAuth.guard';
-import { isAdmin } from '../../../_guards/userChecks/isAdmin';
-import { UserGuard } from '../../../_guards/userGuard.guard';
 import { UserService } from '../../user/database/user.service';
 import { UserPasswordsService } from '../../user/database/userPasswords.service';
 import { UserTokensService } from '../../userTokens/userTokens.service';
+import { GraphqlAuthGuard } from '../_guards/graphqlAuth.guard';
+import { isAdmin } from '../_guards/userChecks/isAdmin';
+import { UserGuard } from '../_guards/userGuard.guard';
 import { AuthService } from '../common/auth.service';
 import { AuthResponseType } from './authResponse.type';
 

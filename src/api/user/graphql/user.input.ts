@@ -1,6 +1,6 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 
-import { PageInput } from '../../../_utils/pagination/page.input';
+import { PageInput } from '../../../utils/graphql/pagination/page.input';
 import { UserCommonFields } from '../common/user.common-fields';
 import { IUserFilter } from './user.query-service';
 

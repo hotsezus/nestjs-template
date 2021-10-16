@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 
-import { applyChanges } from '../../../_utils/object';
-import { tryCatchSqlErrors } from '../../../_utils/sqlErrors';
+import { applyChanges } from '../../../utils/object';
+import { tryCatchSqlErrors } from '../../../utils/sqlErrors';
 import { UserCommonFields } from '../common/user.common-fields';
 import { User } from './user.entity';
 import { UserPasswordsService } from './userPasswords.service';

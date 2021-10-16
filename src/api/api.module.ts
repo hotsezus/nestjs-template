@@ -3,9 +3,9 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import path from 'path';
 
-import { TypeormDataLoaderInterceptor } from '../_utils/typeormDataLoader';
 import { CommonModule } from '../common/common.module';
 import { initialConfig, playgroundConfig } from '../config/graphql';
+import { TypeormDataLoaderInterceptor } from '../utils/graphql/typeormDataLoader';
 import { AuthModule } from './auth/auth.module';
 import { OAuthModule } from './oauth/oauth.module';
 import { OneTimeTokenModule } from './ott/oneTimeToken.module';

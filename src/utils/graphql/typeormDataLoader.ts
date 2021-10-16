@@ -16,7 +16,7 @@ import { isEqual } from 'lodash';
 import { Observable } from 'rxjs';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
-import { transformValuesTo } from './typeorm';
+import { transformValuesTo } from '../typeorm';
 import DataLoader = require('dataloader');
 
 /**

@@ -1,8 +1,8 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, ID, Info, Query, Resolver } from '@nestjs/graphql';
 
-import { GraphqlAuthGuard } from '../../../_guards/graphqlAuth.guard';
-import { applyQueryPagination } from '../../../_utils/pagination/pagination';
+import { applyQueryPagination } from '../../../utils/graphql/pagination/pagination';
+import { GraphqlAuthGuard } from '../../auth/_guards/graphqlAuth.guard';
 import { UserService } from '../database/user.service';
 import { UserPageInput } from './user.input';
 import { UserQueryService } from './user.query-service';

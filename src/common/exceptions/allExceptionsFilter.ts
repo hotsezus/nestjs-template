@@ -9,7 +9,7 @@ import { GqlArgumentsHost, GqlContextType } from '@nestjs/graphql';
 import { customAlphabet } from 'nanoid';
 import { Logger } from 'nestjs-pino';
 
-import { alphabetLowercaseId } from '../../_utils/string';
+import { alphabetLowercaseId } from '../../utils/string';
 
 /**
  * Глобальный обработчик ошибок всего приложения.

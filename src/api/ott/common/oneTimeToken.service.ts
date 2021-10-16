@@ -4,11 +4,11 @@ import { nanoid } from 'nanoid/async';
 import { REDIS_CLIENT, RedisClient } from 'nest-module-redis';
 import { DeepPartial } from 'typeorm';
 
-import { AnyObject } from '../../../_utils/object';
 import {
   oauthTokenExpiration,
   oneTimeTokenExpiration,
 } from '../../../config/environment';
+import { AnyObject } from '../../../utils/object';
 
 export enum OneTimeTokenTypeEnum {
   OAUTH_START = 'OAUTH_START',

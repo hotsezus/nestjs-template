@@ -1,6 +1,6 @@
 import { ObjectType } from '@nestjs/graphql';
 
-import { PageType } from '../../../_utils/pagination/page.type';
+import { PageType } from '../../../utils/graphql/pagination/page.type';
 import { UserFields } from '../common/user.fields';
 
 @ObjectType()

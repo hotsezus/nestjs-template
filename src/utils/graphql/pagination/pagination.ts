@@ -3,7 +3,7 @@ import { fieldsProjection } from 'graphql-fields-list';
 import { SelectQueryBuilder } from 'typeorm';
 import { FindOptionsUtils } from 'typeorm/find-options/FindOptionsUtils';
 
-import { getQueryPage, SkipTakeOptions } from '../queryBuilder/pagination';
+import { getQueryPage, SkipTakeOptions } from '../../queryBuilder/pagination';
 import { PageInputInterface } from './page.input';
 import { PaginationInput } from './pagination.input';
 

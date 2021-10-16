@@ -6,7 +6,7 @@ import {
   BasicSorting,
   SortingDirectionEnum,
   SortingNullsPositionEnum,
-} from '../queryBuilder/builderSort';
+} from '../../queryBuilder/builderSort';
 import { PaginationInput } from './pagination.input';
 
 registerEnumType(SortingDirectionEnum, { name: 'SortingDirectionEnum' });

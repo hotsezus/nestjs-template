@@ -1,8 +1,8 @@
 import { UseGuards } from '@nestjs/common';
 import { Mutation, Resolver } from '@nestjs/graphql';
 
-import { CurrentUser } from '../../../_decorators/currentUser.decorator';
-import { GraphqlAuthGuard } from '../../../_guards/graphqlAuth.guard';
+import { CurrentUser } from '../../auth/_decorators/currentUser.decorator';
+import { GraphqlAuthGuard } from '../../auth/_guards/graphqlAuth.guard';
 import {
   OneTimeTokenService,
   OneTimeTokenTypeEnum,

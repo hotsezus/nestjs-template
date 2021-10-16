@@ -2,16 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
-import { tableAlias } from '../../../_utils/queryBuilder/builderAlias';
-import { andWhereSearch } from '../../../_utils/queryBuilder/builderSearch';
+import { tableAlias } from '../../../utils/queryBuilder/builderAlias';
+import { andWhereSearch } from '../../../utils/queryBuilder/builderSearch';
 import {
   applyBasicSortings,
   BasicSorting,
-} from '../../../_utils/queryBuilder/builderSort';
+} from '../../../utils/queryBuilder/builderSort';
 import {
   addSimpleWhereIns,
   addWhereInSubquery,
-} from '../../../_utils/queryBuilder/builderWhere';
+} from '../../../utils/queryBuilder/builderWhere';
 import { User } from '../database/user.entity';
 
 /**
