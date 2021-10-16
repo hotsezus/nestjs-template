@@ -6,9 +6,9 @@
     "tsConfigPath": "tsconfig.json"
   },
   "projects": {
-    "app": {
+    "api": {
       "type": "application",
-      "entryFile": "app"
+      "entryFile": "api"
     },
     "cli": {
       "type": "application",

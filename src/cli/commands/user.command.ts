@@ -5,10 +5,10 @@ import { Command, Option } from 'nestjs-command';
 import { Repository } from 'typeorm';
 
 import { parseNull } from '../../_utils/string';
-import { UserRolesEnum } from '../../app/user/common/user.common-fields';
-import { User } from '../../app/user/database/user.entity';
-import { UserService } from '../../app/user/database/user.service';
-import { UserPasswordsService } from '../../app/user/database/userPasswords.service';
+import { UserRolesEnum } from '../../api/user/common/user.common-fields';
+import { User } from '../../api/user/database/user.entity';
+import { UserService } from '../../api/user/database/user.service';
+import { UserPasswordsService } from '../../api/user/database/userPasswords.service';
 
 const rolesArray = Object.keys(UserRolesEnum).map((key) => {
   return UserRolesEnum[key];

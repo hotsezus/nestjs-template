@@ -8,11 +8,11 @@ import { json } from 'express';
 import { Logger } from 'nestjs-pino';
 import { join } from 'path';
 
-import { AppModule } from './app/app.module';
+import { ApiModule } from './api/api.module';
 import { appHost, appPort, jsonLimit } from './config/environment';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(ApiModule, {
     // @see https://github.com/iamolegga/nestjs-pino#v2
     bufferLogs: true,
   });

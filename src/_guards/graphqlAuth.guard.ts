@@ -6,7 +6,7 @@ import {
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 
-import { STRATEGY_JWT } from '../app/auth/common/jwtStrategy.service';
+import { STRATEGY_JWT } from '../api/auth/common/jwtStrategy.service';
 
 /**
  * Guard, требующий аутентифицированного пользователя для GraphQL-запроса
