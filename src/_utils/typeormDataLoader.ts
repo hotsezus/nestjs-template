@@ -105,8 +105,8 @@ export class TypeormDataLoaders {
           strict: false,
         },
       );
-      loader = new DataLoader(async (ids: any[]) => {
-        const result = await repository.findByIds(ids);
+      loader = new DataLoader(async (ids: readonly any[]) => {
+        const result = await repository.findByIds(ids as any[]);
         return reorderObjects(result, ids, (m) => m.id);
       });
       this.entityLoaders.set(Type, loader);
@@ -131,8 +131,12 @@ export class TypeormDataLoaders {
       repository.metadata.name + '-' + foreignKey + '-' + builderHash;
     let loader = this.relationLoaders.get(hash);
     if (!loader) {
-      const builder = async (ids: any[]) => {
-        const queryIds = transformValuesTo(repository, foreignKey, ids);
+      const builder = async (ids: readonly any[]) => {
+        const queryIds = transformValuesTo(
+          repository,
+          foreignKey,
+          ids as any[],
+        );
         const query = repository
           .createQueryBuilder('t')
           .andWhere(`t.${foreignKey} IN (:...ids)`, {
@@ -166,8 +170,12 @@ export class TypeormDataLoaders {
       repository.metadata.name + '-' + foreignKey + '-many' + '-' + builderHash;
     let loader = this.relationLoaders.get(hash);
     if (!loader) {
-      const builder = async (ids: any[]) => {
-        const queryIds = transformValuesTo(repository, foreignKey, ids);
+      const builder = async (ids: readonly any[]) => {
+        const queryIds = transformValuesTo(
+          repository,
+          foreignKey,
+          ids as any[],
+        );
         const query = repository
           .createQueryBuilder('t')
           .andWhere(`t.${foreignKey} IN (:...ids)`, {
@@ -201,8 +209,12 @@ export class TypeormDataLoaders {
       repository.metadata.name + '-' + foreignKey + '-manyCount-' + builderHash;
     let loader = this.relationLoaders.get(hash);
     if (!loader) {
-      const builder = async (ids: any[]) => {
-        const queryIds = transformValuesTo(repository, foreignKey, ids);
+      const builder = async (ids: readonly any[]) => {
+        const queryIds = transformValuesTo(
+          repository,
+          foreignKey,
+          ids as any[],
+        );
         const query = repository
           .createQueryBuilder('t')
           .select(`t.${foreignKey}`, 'item_id')
@@ -254,8 +266,12 @@ export class TypeormDataLoaders {
       builderHash;
     let loader = this.relationLoaders.get(hash);
     if (!loader) {
-      const builder = async (ids: any[]) => {
-        const queryIds = transformValuesTo(repository, foreignKey, ids);
+      const builder = async (ids: readonly any[]) => {
+        const queryIds = transformValuesTo(
+          repository,
+          foreignKey,
+          ids as any[],
+        );
         const query = repository
           .createQueryBuilder('t')
           .innerJoinAndMapOne(`t.${joinKey}`, `t.${joinKey}`, 't1')
