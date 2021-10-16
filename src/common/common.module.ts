@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from 'nest-module-redis';
 import { LoggerModule } from 'nestjs-pino';
 import { stdTimeFunctions } from 'pino';
 
 import { isProduction } from '../config/environment';
+import { ormConfig } from '../config/ormconfig';
 import { redis } from '../config/redis';
-import { DatabaseModule } from '../database/database.module';
 import { ExceptionsModule } from './exceptions/exceptions.module';
 import { QueuesModule } from './queues/queues.module';
 
@@ -25,10 +26,10 @@ import { QueuesModule } from './queues/queues.module';
       },
     }),
     RedisModule.forRoot(redis),
-    DatabaseModule,
+    TypeOrmModule.forRoot(ormConfig),
     QueuesModule,
     ExceptionsModule,
   ],
-  exports: [DatabaseModule, LoggerModule],
+  exports: [LoggerModule],
 })
 export class CommonModule {}

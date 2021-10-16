@@ -40,17 +40,17 @@ const appConfig = ({ script, name, instances }) =>
 module.exports = {
   apps: [
     appConfig({
-      script: 'dist/bin/api.js',
+      script: 'dist/api.js',
       name: 'api',
       instances: apiInstances,
     }),
     appConfig({
-      script: 'dist/bin/scheduler.js',
+      script: 'dist/scheduler.js',
       name: 'scheduler',
       instances: schedulerInstances,
     }),
     appConfig({
-      script: 'dist/bin/worker.js',
+      script: 'dist/worker.js',
       name: 'worker',
       instances: workerInstances,
     }),
