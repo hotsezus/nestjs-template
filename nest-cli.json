@@ -1,28 +1,26 @@
 {
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
-  "entryFile": "bin/api",
+  "monorepo": true,
   "compilerOptions": {
-    "plugins": [
-      {
-        "name": "@nestjs/swagger/plugin",
-        "options": {
-          "dtoFileNameSuffix": [".controller.ts", ".type.ts"],
-          "introspectComments": true
-        }
-      },
-      {
-        "name": "@nestjs/graphql",
-        "options": {
-          "typeFileNameSuffix": [
-            ".common-fields.ts",
-            ".fields.ts",
-            ".type.ts",
-            ".input.ts"
-          ],
-          "introspectComments": true
-        }
-      }
-    ]
+    "tsConfigPath": "tsconfig.json"
+  },
+  "projects": {
+    "api": {
+      "type": "application",
+      "entryFile": "api/api"
+    },
+    "cli": {
+      "type": "application",
+      "entryFile": "cli/cli"
+    },
+    "worker": {
+      "type": "application",
+      "entryFile": "worker/worker"
+    },
+    "scheduler": {
+      "type": "application",
+      "entryFile": "scheduler/scheduler"
+    }
   }
 }

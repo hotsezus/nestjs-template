@@ -4,10 +4,10 @@ import { nanoid } from 'nanoid/async';
 import { Command, Option } from 'nestjs-command';
 import { Repository } from 'typeorm';
 
-import { UserRolesEnum } from '../../database/entities/user/user.common-fields';
-import { User } from '../../database/entities/user/user.entity';
-import { UserService } from '../../database/entities/user/user.service';
-import { UserPasswordsService } from '../../database/entities/user/userPasswords.service';
+import { UserRolesEnum } from '../../app/user/common/user.editable-fields';
+import { User } from '../../app/user/database/user.entity';
+import { UserService } from '../../app/user/database/user.service';
+import { UserPasswordsService } from '../../app/user/database/userPasswords.service';
 import { parseNull } from '../../utils/string';
 
 const rolesArray = Object.keys(UserRolesEnum).map((key) => {
@@ -28,11 +28,6 @@ export class UserCommand {
     describe: 'Creates new user',
   })
   async userCreate(
-    @Option({
-      name: 'login',
-      type: 'string',
-    })
-    login: string,
     @Option({
       name: 'email',
       type: 'string',
@@ -62,10 +57,6 @@ export class UserCommand {
     })
     role_code: UserRolesEnum,
   ) {
-    if (!login && !email) {
-      console.log('Either login or email is required');
-      return 1;
-    }
     if (!password && !passwordLength) {
       console.log('Either password or passwordLength is required');
       return 1;
@@ -76,10 +67,9 @@ export class UserCommand {
     }
 
     const user = await this.userService.createUser({
-      login,
       email,
       name,
-      role: role_code,
+      // role: role_code,
       password,
     });
 

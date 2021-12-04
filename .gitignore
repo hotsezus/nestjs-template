@@ -4,6 +4,7 @@
 tsconfig.build.tsbuildinfo
 schema.gql
 diagram.puml
+*.tsbuildinfo
 
 # Logs
 logs

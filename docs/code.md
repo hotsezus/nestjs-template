@@ -9,25 +9,25 @@
 Среди основных типов файлов:
 
 1. Модули
-   
-    a. Базовые модули - `*.module.ts`
-    
-    b. GraphQL модули - `*.graphql-module.ts`
-   
+
+   a. Базовые модули - `*.module.ts`
+
+   b. GraphQL модули - `*.graphql-module.ts`
+
 2. GraphQL резолверы
-   
+
    a. Резолверы типов - `*.resolver.ts`
-   
-      * `@ResolveField` декораторы для полей, относящихся к типу
-   
+
+    * `@ResolveField` декораторы для полей, относящихся к типу
+
    b. Резолверы квери - `*.query-resolver.ts`
 
-      * `@Query` декораторы для запросов, относящихся к типу
+    * `@Query` декораторы для запросов, относящихся к типу
 
    с. Резолверы мутаций - `*.mutation-resolver.ts`
 
-      * `@Mutation` декораторы для мутаций, относящихся к типу
-   
+    * `@Mutation` декораторы для мутаций, относящихся к типу
+
 3. GraphQL типы
 
    a. Object типы - `*.type.ts`
@@ -36,39 +36,44 @@
 
 4. ORM сущности
 
+   Часто GraphQL типы сильно похожи на описание сущности в базе данных.
+   Чтобы избежать дублирования между сущностями и GraphQL типами, мы разбиваем определение сущности на три файла.
+
    a. Сами сущности - `*.entity.ts`
 
-      * `@Entity` декоратор
+    * `@Entity` декоратор
 
-   b. Описание полей, общих для сущностей и GraphQL типов - `*.fields.ts`
-      
-      * `@ObjectType` декоратор с параметром `isAbstract: true`
-      * abstract класс
+   b. Описание полей сущностей, доступных для чтения в GraphQL - `*.readable-fields.ts`
 
-   с. Описание полей, общих для Entity, а также Object и Input GraphQL типов - `*.common-fields.ts`
+    * `@ObjectType` декоратор с параметром `isAbstract: true`
+    * abstract класс
 
-      * `@ObjectType` и/или `@InputType` декораторы с параметром `isAbstract: true`
-      * abstract класс
+   с. Описание полей сущностей, доступных для редактирования в GraphQL - `*.editable-fields.ts`
 
-Обратите внимание на гайдлайны по [именованию абстракций в Nestjs](https://gitlab.com/proscom/guide/-/blob/master/nestjs/naming.md).   
+    * `@ObjectType` и/или `@InputType` декораторы с параметром `isAbstract: true`
+    * abstract класс
+
+Обратите внимание на гайдлайны по [именованию абстракций в Nestjs](https://gitlab.com/proscom/guide/-/blob/master/nestjs/naming.md).
 
 ### Пример сущности
 
 Возьмем в пример сущность User:
 
-   * Общие для Entity, ObjectType и InputType поля сущности должны быть расположены в `user.common-fields.ts` файле
+* Общие для Entity, ObjectType и InputType поля сущности должны быть расположены в `user.editable-fields.ts` файле
 
-   * Общие для Entity и ObjectType поля должны быть расположены в `user.fields.ts`
+* Общие для Entity и ObjectType поля должны быть расположены в `user.readable-fields.ts`
 
-   * Поля, недоступные в GraphQL типах, но необходимые в ORM сущности, должны быть в `user.entity.ts`
+* Поля, недоступные в GraphQL типах, но необходимые в ORM сущности, должны быть в `user.entity.ts`
+
+* Типы `UserCreateInput`, `UserUpdateInput` и `UserType` могут содержать дополнительные GraphQL-специфичные поля
 
 ```
-                                    @InputType
-@Entity        @ObjectType          @ObjectType
-User     <---- UserFields     <---  UserCommonFields
-                 ^                    ^               ^
-               @ObjectType          @InputType        @InputType
-               UserType             UserCreateInput   UserUpdateInput
+                                       @InputType
+@Entity        @ObjectType             @ObjectType
+User     <---- UserReadableFields <--- UserEditableFields
+                 ^                     ^                ^
+               @ObjectType           @InputType         @InputType
+               UserType              UserCreateInput    UserUpdateInput
 ```
 
 ---
@@ -77,20 +82,40 @@ User     <---- UserFields     <---  UserCommonFields
 
 Описание основных директорий:
 
-- `bin` - входные точки для запуска проекта в разных режимах
+- `_migrations` - файлы миграций базы данных, сгенерированные TypeORM CLI
 
-- `cli` - CommandsModule, импортирующий cli команды из `cli/commands`
+- `api` - бинарник `api.ts` и ApiModule, реализующие веб-сервис с GraphQL и REST API
 
-- `common` - CommonModule и импортированные в него модули. Содержит весь код, который обычно нужен проекту вне зависимости от режима работы
+- `app` - модули приложения, реализующие бизнес-логику, а также адаптеры (для работы с БД и реализации API)
+
+    - Структура модуля приложения:
+        - `common` - общие сервисы модуля
+        - `graphql` - типы и резолверы для GraphQL API этого модуля
+        - `rest` - типы и обработчики для REST API этого модуля
+        - другие папки в соответствии с потребностями модуля
+
+    - Стандартные модули:
+        - `auth` - реализует аутентификацию пользователей в API с помощью refresh и access токенов
+        - `oauth` - реализует OAuth 2.0 клиент, позволяя пользователям авторизоваться через соцсети
+        - `ott` - реализует одноразовые токены
+        - `user` - реализует модель пользователя, CRUD операции работы с ней, а также бизнес-логику паролей
+        - `userSocial` - реализует модель соцсети пользователя
+        - `userTokens` - реализует модели аутентификационного токена пользователя
+
+- `cli` - бинарник `cli.ts` и CliModule, реализующие консольный интерфейс взаимодействия с приложением
+
+- `common` - CommonModule и импортированные в него модули.
+    Содержит код не связанный с конкретным бизнес-доменом, который обычно нужен проекту вне зависимости от режима работы.
+   
+    - `exceptions` - настройка обработки исключений
+    - `queues` - определения очередей задач
 
 - `config` - директория с typescript файлами описывающими параметры разных модулей системы
 
-- `database` - DatabaseModule, импортирующий модули всех ORM сущностей. Также содержит директорию `migrations`, содержащую в себе файлы миграций базы данных, сгенерированные TypeORM CLI
+- `scheduler` - бинарник `scheduler.ts` и SchedulerModule, реализующий выполнение задач по расписанию
 
-- `graphql` - AppGraphqlModule, импортирующий модули всех GraphQL типов
+- `utils` - директория (не модуль), содержащая чистые утилитарные функции и классы, которые не используют модульность NestJS либо не привязаны конкретно к этому приложению
 
-- `scheduler` - AppSchedulerModule, импортирующий все необходимые задачи, выполняемые по расписанию
+- `worker` - бинарник `worker.ts` и WorkerModule, реализующий обработчик очереди задач 
 
-- `utils` - директория (не модуль), содержащая чистые утилитарные функции и классы, не использующие модульность NestJS
-
-- `worker` - ProcessorsModule, импортирующий исполнителей задач очередей из `worker/processors`
+- `views` - `ejs`-шаблоны для нужд приложения 
