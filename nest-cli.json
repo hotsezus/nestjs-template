@@ -8,19 +8,19 @@
   "projects": {
     "api": {
       "type": "application",
-      "entryFile": "api"
+      "entryFile": "api/api"
     },
     "cli": {
       "type": "application",
-      "entryFile": "cli"
+      "entryFile": "cli/cli"
     },
     "worker": {
       "type": "application",
-      "entryFile": "worker"
+      "entryFile": "worker/worker"
     },
     "scheduler": {
       "type": "application",
-      "entryFile": "scheduler"
+      "entryFile": "scheduler/scheduler"
     }
   }
 }
