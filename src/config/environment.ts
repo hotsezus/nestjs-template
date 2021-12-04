@@ -1,6 +1,6 @@
 import { tryNumber } from '@proscom/ui-utils';
 
-import { booleanEnv } from './tools';
+import { booleanEnv } from '../utils/environment';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 

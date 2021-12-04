@@ -3,8 +3,8 @@ import 'dotenv/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm/dist/interfaces/typeorm-options.interface';
 import { tryNumber } from '@proscom/ui-utils';
 
+import { booleanEnv } from '../utils/environment';
 import { typeormBaseDirectory } from './environment';
-import { booleanEnv } from './tools';
 
 console.error(
   `TypeORM configuration uses base directory '${typeormBaseDirectory}' in ${__filename}`,

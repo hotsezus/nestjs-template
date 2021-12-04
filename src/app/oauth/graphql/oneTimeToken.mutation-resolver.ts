@@ -8,7 +8,7 @@ import {
   OneTimeTokenTypeEnum,
 } from '../../ott/common/oneTimeToken.service';
 import { User } from '../../user/database/user.entity';
-import { OneTimeTokenOAuthStart } from '../rest/oauthStart';
+import { OneTimeTokenOAuthStart } from '../rest/OneTimeTokenOAuthStart';
 
 @Resolver()
 export class OneTimeTokenMutationResolver {

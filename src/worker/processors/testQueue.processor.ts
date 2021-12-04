@@ -18,7 +18,7 @@ export class TestQueueProcessor extends BaseProcessor {
   }
 
   @Process()
-  async process(job: Job<BullQueueTestPayload>) {
+  public async process(job: Job<BullQueueTestPayload>) {
     this.logger.log({
       msg: 'Processing test job',
       data: job.data,

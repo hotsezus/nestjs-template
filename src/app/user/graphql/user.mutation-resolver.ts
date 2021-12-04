@@ -1,5 +1,6 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
+import { isNil } from 'lodash';
 
 import { GraphqlAuthGuard } from '../../auth/guards/graphqlAuth.guard';
 import { UserService } from '../database/user.service';
@@ -46,6 +47,7 @@ export class UserMutationResolver {
   async deleteUser(
     @Args({ name: 'id', type: () => ID }) id: number,
   ): Promise<boolean> {
-    return !!(await this.userService.deleteUser(id)).affected;
+    const result = await this.userService.deleteUser(id);
+    return !isNil(result.affected) && result.affected > 0;
   }
 }

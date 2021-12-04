@@ -14,7 +14,7 @@ export abstract class BaseProcessor {
   ) {}
 
   @OnQueueActive()
-  onActive(job: Job) {
+  public onActive(job: Job) {
     this.logger.log({
       msg: 'Job started',
       queue: this.queueName,
@@ -23,7 +23,7 @@ export abstract class BaseProcessor {
   }
 
   @OnQueueFailed()
-  onFailed(job: Job, err: Error) {
+  public onFailed(job: Job, err: Error) {
     this.logger.log({
       msg: 'Job failed',
       queue: this.queueName,
@@ -35,7 +35,7 @@ export abstract class BaseProcessor {
   }
 
   @OnQueueCompleted()
-  onCompleted(job: Job) {
+  public onCompleted(job: Job) {
     this.logger.log({
       msg: 'Job completed',
       queueGroup: this.queueName,

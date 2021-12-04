@@ -10,6 +10,7 @@ import {
 import { defaultOptions } from '@nestjs/passport/dist/options';
 import { CustomError } from '@proscom/ui-utils';
 import { Request, Response } from 'express';
+import { isNil } from 'lodash';
 import { nanoid } from 'nanoid';
 import { Repository } from 'typeorm';
 
@@ -34,9 +35,9 @@ import {
   UserSocial,
 } from '../../userSocial/userSocial.entity';
 import { createPassportContext } from './createPassportContext';
-import { OneTimeTokenOAuthFlow } from './oauthFlow';
-import { OAuthProfile } from './oauthProfile';
-import { OneTimeTokenOAuthStart } from './oauthStart';
+import { OAuthProfile } from './OAuthProfile';
+import { OneTimeTokenOAuthFlow } from './OneTimeTokenOAuthFlow';
+import { OneTimeTokenOAuthStart } from './OneTimeTokenOAuthStart';
 
 class DisplayableError extends CustomError {}
 
@@ -66,7 +67,7 @@ export abstract class OAuthController {
   }
 
   @Get('/')
-  async startFlow(
+  public async startFlow(
     @Query('token') token: string,
     @Query('origin') origin: string,
     @Req() req: Request,
@@ -101,7 +102,7 @@ export abstract class OAuthController {
 
   @Get('/redirect')
   @Render('oauthFinish')
-  async handleRedirect(@Req() req: Request, @Res() res: Response) {
+  public async handleRedirect(@Req() req: Request, @Res() res: Response) {
     try {
       const tokenData =
         await this.oneTimeTokenService.consume<OneTimeTokenOAuthFlow>(
@@ -120,7 +121,7 @@ export abstract class OAuthController {
 
       let user;
 
-      if (tokenData?.userId) {
+      if (!isNil(tokenData?.userId)) {
         // Если в токене есть userId, значит пользователь существует и это попытка привязки стороннего профиля к пользователю системы
         user = await this.userRepository.findOne({
           id: tokenData?.userId,
@@ -182,7 +183,11 @@ export abstract class OAuthController {
     }
   }
 
-  async applyPassport(req: Request, res: Response, options: AnyObject) {
+  protected async applyPassport(
+    req: Request,
+    res: Response,
+    options: AnyObject,
+  ) {
     const passportFn = createPassportContext(req, res);
     const _options = {
       ...defaultOptions,
@@ -202,7 +207,7 @@ export abstract class OAuthController {
     return result as OAuthProfile;
   }
 
-  async findUser(oauthProfile: any) {
+  protected async findUser(oauthProfile: any) {
     const socialUser = await this._getSocialUser(oauthProfile.socialId);
     if (socialUser) return socialUser;
 
@@ -226,7 +231,7 @@ export abstract class OAuthController {
     return undefined;
   }
 
-  async createUser(oauthProfile: any) {
+  protected async createUser(oauthProfile: any) {
     // Если пользователь так и не нашелся, создаем его с помощью email пользователя стороннего сервиса
     const user = await this.userService.createUser({
       name: oauthProfile.firstName,
@@ -236,7 +241,7 @@ export abstract class OAuthController {
     return user;
   }
 
-  _getSocialUserQuery(socialId: number | string) {
+  protected _getSocialUserQuery(socialId: number | string) {
     return this.userSocialRepository
       .createQueryBuilder('user_social')
       .select('distinct user_id')
@@ -248,7 +253,7 @@ export abstract class OAuthController {
       });
   }
 
-  async _getSocialUser(socialId: number | string) {
+  protected async _getSocialUser(socialId: number | string) {
     const subquery = this._getSocialUserQuery(socialId);
     const query = this.userRepository.createQueryBuilder('user');
     addWhereInSubquery(query, 'user.id', subquery);

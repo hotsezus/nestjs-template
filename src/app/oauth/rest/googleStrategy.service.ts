@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-google-oauth20';
 
-import { OAuthProfile } from './oauthProfile';
+import { OAuthProfile } from './OAuthProfile';
 
 export const PASSPORT_STRATEGY_GOOGLE = 'google';
 
@@ -28,7 +28,7 @@ export class GoogleStrategy extends PassportStrategy(
   /**
    * Дополнительные параметры, передаваемые в Google
    */
-  authorizationParams(): { [key: string]: string } {
+  protected authorizationParams(): { [key: string]: string } {
     return {
       access_type: 'offline',
       prompt: 'consent',
@@ -44,7 +44,7 @@ export class GoogleStrategy extends PassportStrategy(
    * @param refreshToken - рефреш-токен (долгосрочный)
    * @param profile - информация, переданная из Google
    */
-  async validate(
+  protected async validate(
     request,
     accessToken: string,
     refreshToken: string,

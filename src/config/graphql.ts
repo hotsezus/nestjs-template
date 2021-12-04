@@ -14,8 +14,8 @@ export const initialConfig: Partial<GqlModuleOptions> = {
    */
   context: ({ req, connection }) =>
     connection ? { req: connection.context } : { req },
-  // Позволяет использовать guard'ы на @ResolveField
-  fieldResolverEnhancers: ['guards'],
+  // Позволяет использовать guard и ExceptionFilter на @ResolveField
+  fieldResolverEnhancers: ['guards', 'filters'],
   buildSchemaOptions: {
     // Нужно чтобы TS с типом number по умолчанию имели тип `GraphQLInt` в сгенерированной схеме
     // В случаях, если поле должно быть Float, нужно принудительно указать это при помощи
