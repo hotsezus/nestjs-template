@@ -30,6 +30,11 @@ function createLodashMemoizer<Args extends any[], Res>(
   };
 }
 
+type RequiredField<T, Field extends keyof T> = Exclude<
+  T[Field],
+  null | undefined
+>;
+
 /**
  * Менеджер даталоадеров для сущностей TypeORM
  */
@@ -49,7 +54,7 @@ export class TypeormDataLoaders {
     Type: Constructor<T>,
     connection?: string,
   ) {
-    type ID = T extends { id: infer ID } ? ID : undefined;
+    type ID = RequiredField<T, 'id'>;
     let loader = this.entityLoaders.get(Type);
     if (!loader) {
       const repoToken: string | Function = getRepositoryToken(Type, connection);
@@ -80,7 +85,7 @@ export class TypeormDataLoaders {
       query: SelectQueryBuilder<T>,
     ) => Promise<SelectQueryBuilder<T>> | SelectQueryBuilder<T>,
   ) {
-    type ID = T extends Partial<Record<FK, infer ID>> ? ID : undefined;
+    type ID = RequiredField<T, FK>;
     const builderHash = this.getBuilderHash(queryBuilder);
     const hash =
       repository.metadata.name + '-' + foreignKey + '-' + builderHash;
@@ -116,7 +121,7 @@ export class TypeormDataLoaders {
       query: SelectQueryBuilder<T>,
     ) => Promise<SelectQueryBuilder<T>> | SelectQueryBuilder<T>,
   ) {
-    type ID = T extends Partial<Record<FK, infer ID>> ? ID : undefined;
+    type ID = RequiredField<T, FK>;
     const builderHash = this.getBuilderHash(queryBuilder);
     const hash =
       repository.metadata.name + '-' + foreignKey + '-many' + '-' + builderHash;
@@ -152,7 +157,7 @@ export class TypeormDataLoaders {
       query: SelectQueryBuilder<T>,
     ) => Promise<SelectQueryBuilder<T>> | SelectQueryBuilder<T>,
   ) {
-    type ID = T extends Partial<Record<FK, infer ID>> ? ID : undefined;
+    type ID = RequiredField<T, FK>;
     const builderHash = this.getBuilderHash(queryBuilder);
     const hash =
       repository.metadata.name + '-' + foreignKey + '-manyCount-' + builderHash;
@@ -200,7 +205,7 @@ export class TypeormDataLoaders {
       query: SelectQueryBuilder<T>,
     ) => Promise<SelectQueryBuilder<T>> | SelectQueryBuilder<T>,
   ) {
-    type ID = T extends Partial<Record<FK, infer ID>> ? ID : undefined;
+    type ID = RequiredField<T, FK>;
     const builderHash = this.getBuilderHash(queryBuilder);
     const hash =
       repository.metadata.name +
