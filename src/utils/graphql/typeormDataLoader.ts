@@ -1,5 +1,5 @@
 // We need Function type here
-/* eslint-disable @typescript-eslint/ban-types*/
+/* eslint-disable @typescript-eslint/ban-types */
 
 import {
   CallHandler,
