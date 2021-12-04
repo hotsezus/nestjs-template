@@ -23,7 +23,7 @@ export const ormConfig: TypeOrmModuleOptions = {
   username: typeormUser,
   password: typeormPassword,
   database: typeormDatabase,
-  entities: [`${typeormBaseDirectory}/api/**/*.entity{.ts,.js}`],
+  entities: [`${typeormBaseDirectory}/**/*.entity{.ts,.js}`],
   migrationsTableName: 'typeorm_migrations',
   migrations: [`${typeormBaseDirectory}/_migrations/*{.ts,.js}`],
   cli: {
