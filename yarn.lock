@@ -614,13 +614,14 @@
     open "7.0.4"
     yargs "15.3.1"
 
-"@proscom/ui-utils@^0.1.16":
-  version "0.1.16"
-  resolved "https://registry.yarnpkg.com/@proscom/ui-utils/-/ui-utils-0.1.16.tgz#d7dada9765bbbf5565ea1ccfa66a622a878fb156"
-  integrity sha512-H4TNitxSSGJETwXDZ5v1G+3WpWjqcrq/TyZJonFeTogt7VPGw3JlL75Hre2iNCWQsGDaIdBc8kPKegqcFmmoEw==
+"@proscom/ui-utils@^0.1.18":
+  version "0.1.18"
+  resolved "https://registry.yarnpkg.com/@proscom/ui-utils/-/ui-utils-0.1.18.tgz#659c0a45665540a17835f01c0e2cdf0a26bc6ec4"
+  integrity sha512-5f0287WSBcnoL3zA8mR3s6lt1ywp+D0C00Vxnaw5BYgW1yIXhrnSs4isWDvofn0YfjwDGLm+xF1MrQeeYruvcA==
   dependencies:
     async "^3.0.0"
     lodash "^4.0.0"
+    ts-custom-error "^3.2.0"
     tslib "^2.0.0"
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
@@ -5988,6 +5989,11 @@ tree-kill@1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
+
+ts-custom-error@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/ts-custom-error/-/ts-custom-error-3.2.0.tgz#ff8f80a3812bab9dc448536312da52dce1b720fb"
+  integrity sha512-cBvC2QjtvJ9JfWLvstVnI45Y46Y5dMxIaG1TDMGAD/R87hpvqFL+7LhvUDhnRCfOnx/xitollFWWvUKKKhbN0A==
 
 ts-loader@^9.2.6:
   version "9.2.6"

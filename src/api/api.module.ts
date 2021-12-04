@@ -9,7 +9,7 @@ import { OAuthRestModule } from '../app/oauth/rest/oauth.rest-module';
 import { UserGraphqlModule } from '../app/user/graphql/user.graphql-module';
 import { CommonModule } from '../common/common.module';
 import { initialConfig, playgroundConfig } from '../config/graphql';
-import { TypeormDataLoaderInterceptor } from '../utils/graphql/typeormDataLoader';
+import { TypeormDataLoaderInterceptor } from '../utils/graphql/dataloaders/TypeormDataLoaderInterceptor';
 
 @Module({
   imports: [

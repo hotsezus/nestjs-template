@@ -29,8 +29,8 @@ export class UserAuthToken extends UserAuthTokenFields {
   device_metadata: any;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
-  created_at?: Date;
+  created_at?: Date | null;
 
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
-  updated_at?: Date;
+  updated_at?: Date | null;
 }

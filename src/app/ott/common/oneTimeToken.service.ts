@@ -8,7 +8,7 @@ import {
   oauthTokenExpiration,
   oneTimeTokenExpiration,
 } from '../../../config/environment';
-import { AnyObject } from '../../../utils/object';
+import { AnyObject } from '../../../utils/object/object';
 
 export enum OneTimeTokenTypeEnum {
   OAUTH_START = 'OAUTH_START',

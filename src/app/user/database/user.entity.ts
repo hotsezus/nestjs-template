@@ -21,19 +21,19 @@ export class User extends UserReadableFields {
   id: number;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
-  created_at?: Date;
+  created_at?: Date | null;
 
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
-  updated_at?: Date;
+  updated_at?: Date | null;
 
   @Column({ type: 'integer', nullable: true })
-  creator_user_id?: number;
+  creator_user_id?: number | null;
 
   @ManyToOne(() => User, { onDelete: 'SET NULL' })
   @JoinColumn({
     name: 'creator_user_id',
   })
-  creator_user?: User;
+  creator_user?: User | null;
 
   @OneToMany(() => UserAuthPassword, (password) => password.user)
   authPasswords: UserAuthPassword[];

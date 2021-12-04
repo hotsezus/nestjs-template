@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 
-import { applyChanges } from '../../../utils/object';
+import { applyChanges } from '../../../utils/object/object';
 import { tryCatchSqlErrors } from '../../../utils/sqlErrors';
 import { UserEditableFields } from '../common/user.editable-fields';
 import { User } from './user.entity';

@@ -39,10 +39,10 @@ export class UserSocial {
   social_id: string;
 
   @Column({ type: 'text', nullable: true })
-  access_token?: string;
+  access_token?: string | null;
 
   @Column({ type: 'text', nullable: true })
-  refresh_token?: string;
+  refresh_token?: string | null;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   created_at: Date;

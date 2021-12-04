@@ -37,8 +37,8 @@ export function getPropertyTransformer<Entity>(
 
 function getTransformedValues(
   transformer: ValueTransformer | ValueTransformer[] | null | undefined,
-  values: any[],
-): any[] {
+  values: readonly any[],
+): readonly any[] {
   if (transformer) {
     return values.map((value) =>
       ApplyValueTransformers.transformTo(transformer, value),
@@ -50,7 +50,7 @@ function getTransformedValues(
 export function transformValuesTo<Entity>(
   repository: Repository<Entity>,
   field: string,
-  values: any[],
+  values: readonly any[],
 ) {
   const transformer = getPropertyTransformer(repository, field);
   return getTransformedValues(transformer, values);

@@ -20,7 +20,7 @@ import {
   oauthTokenExpiration,
   socialFrontendOrigin,
 } from '../../../config/environment';
-import { AnyObject } from '../../../utils/object';
+import { AnyObject } from '../../../utils/object/object';
 import { addWhereInSubquery } from '../../../utils/queryBuilder/builderWhere';
 import { AuthService } from '../../auth/common/auth.service';
 import {

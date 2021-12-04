@@ -1,64 +1,17 @@
-// We need Function type here
+// Здесь нужен тип Function
 /* eslint-disable @typescript-eslint/ban-types */
 
-import {
-  CallHandler,
-  createParamDecorator,
-  ExecutionContext,
-  Injectable,
-  NestInterceptor,
-} from '@nestjs/common';
+import { Constructor } from '@nestjs/common/utils/merge-with-values.util';
 import { ModuleRef } from '@nestjs/core';
-import { GqlExecutionContext } from '@nestjs/graphql';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { BatchLoadFn } from 'dataloader';
 import { isEqual } from 'lodash';
-import { Observable } from 'rxjs';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
-import { transformValuesTo } from '../typeorm';
+import { regroupObjects } from '../../object/regroupObjects';
+import { reorderObjects } from '../../object/reorderObjects';
+import { transformValuesTo } from '../../typeorm';
 import DataLoader = require('dataloader');
-
-/**
- * Переупорядочивает массив объектов в соответствии с массивом ключей
- * В случае дубликатов остается последний
- */
-export function reorderObjects<ObjectType, Key, Value = ObjectType | null>(
-  data: readonly ObjectType[],
-  ids: readonly Key[],
-  key: (obj: ObjectType) => Key,
-  select: (obj: ObjectType | null) => Value = (o) => o as unknown as Value,
-): Value[] {
-  const map = new Map<Key, Value>();
-  for (const model of data) {
-    map.set(key(model), select(model));
-  }
-  return ids.map((id) => map.get(id) || select(null));
-}
-
-/**
- * Переупорядочивает массив объектов в соответствии с массивом ключей
- * Группирует объекты с одинаковыми ключами в массив
- */
-export function regroupObjects<ObjectType, Key, Value = ObjectType>(
-  data: readonly ObjectType[],
-  ids: readonly Key[],
-  key: (obj: ObjectType) => Key,
-  select: (obj: ObjectType) => Value = (o) => o as unknown as Value,
-): Value[][] {
-  const map = new Map<Key, Value[]>();
-  for (const model of data) {
-    const modelKey = key(model);
-    const group = map.get(modelKey);
-    const value = select(model);
-    if (group) {
-      group.push(value);
-    } else {
-      map.set(modelKey, [value]);
-    }
-  }
-  return ids.map((id) => map.get(id) || []);
-}
 
 export type BatchLoadCreator<K, T> = (...args) => BatchLoadFn<K, T>;
 
@@ -81,21 +34,22 @@ function createLodashMemoizer<Args extends any[], Res>(
  * Менеджер даталоадеров для сущностей TypeORM
  */
 export class TypeormDataLoaders {
-  entityLoaders = new Map<Function, DataLoader<any, any>>();
-  relationLoaders = new Map<string, DataLoader<any, any>>();
-  builders = new Map<Function, string>();
-  buildersCount = 0;
-  loaders = new Map<Function, DataLoader<any, any>>();
+  protected entityLoaders = new Map<Function, DataLoader<any, any>>();
+  protected relationLoaders = new Map<string, DataLoader<any, any>>();
+  protected builders = new Map<Function, string>();
+  protected buildersCount = 0;
+  protected loaders = new Map<Function, DataLoader<any, any>>();
 
   constructor(private readonly moduleRef: ModuleRef) {}
 
   /**
    * Возвращает или создает загрузчик сущностей по id
    */
-  getEntityLoader<T extends { id: any }>(
-    Type,
+  public getEntityLoader<T extends { id: any }>(
+    Type: Constructor<T>,
     connection?: string,
-  ): DataLoader<any, T> {
+  ) {
+    type ID = T extends { id: infer ID } ? ID : undefined;
     let loader = this.entityLoaders.get(Type);
     if (!loader) {
       const repoToken: string | Function = getRepositoryToken(Type, connection);
@@ -105,38 +59,35 @@ export class TypeormDataLoaders {
           strict: false,
         },
       );
-      loader = new DataLoader(async (ids: readonly any[]) => {
-        const result = await repository.findByIds(ids as any[]);
+      loader = new DataLoader<ID, T | null>(async (ids: readonly ID[]) => {
+        const result = await repository.findByIds([...ids]);
         return reorderObjects(result, ids, (m) => m.id);
       });
       this.entityLoaders.set(Type, loader);
     }
 
-    return loader;
+    return loader as DataLoader<ID, T | null>;
   }
 
   /**
    * Возвращает или создает загрузчик сущностей по произвольному полю
    * Оставляет только одну сущность на каждый запрос
    */
-  getRelationLoader<T>(
+  public getRelationLoader<T, FK extends keyof T & string>(
     repository: Repository<T>,
-    foreignKey: string,
+    foreignKey: FK,
     queryBuilder?: (
       query: SelectQueryBuilder<T>,
     ) => Promise<SelectQueryBuilder<T>> | SelectQueryBuilder<T>,
-  ): DataLoader<any, T> {
+  ) {
+    type ID = T extends Partial<Record<FK, infer ID>> ? ID : undefined;
     const builderHash = this.getBuilderHash(queryBuilder);
     const hash =
       repository.metadata.name + '-' + foreignKey + '-' + builderHash;
     let loader = this.relationLoaders.get(hash);
     if (!loader) {
-      const builder = async (ids: readonly any[]) => {
-        const queryIds = transformValuesTo(
-          repository,
-          foreignKey,
-          ids as any[],
-        );
+      const builder = async (ids: readonly ID[]) => {
+        const queryIds = transformValuesTo(repository, foreignKey, ids);
         const query = repository
           .createQueryBuilder('t')
           .andWhere(`t.${foreignKey} IN (:...ids)`, {
@@ -145,37 +96,34 @@ export class TypeormDataLoaders {
 
         const query2 = queryBuilder ? await queryBuilder(query) : query;
         const result = await query2.getMany();
-        return reorderObjects(result, ids, (m) => m[foreignKey]);
+        return reorderObjects(result, ids, (m) => m[foreignKey] as ID);
       };
-      loader = new DataLoader<any, T | null>(builder);
+      loader = new DataLoader<ID, T | null>(builder);
       this.relationLoaders.set(hash, loader);
     }
 
-    return loader;
+    return loader as DataLoader<ID, T | null>;
   }
 
   /**
    * Возвращает или создает загрузчик сущностей по произвольному полю
    * Созданный загрузчик возвращает массив сущностей, подходящих под условие
    */
-  getManyRelationLoader<T>(
+  public getManyRelationLoader<T, FK extends string & keyof T>(
     repository: Repository<T>,
-    foreignKey: string,
+    foreignKey: FK,
     queryBuilder?: (
       query: SelectQueryBuilder<T>,
     ) => Promise<SelectQueryBuilder<T>> | SelectQueryBuilder<T>,
-  ): DataLoader<any, T[]> {
+  ) {
+    type ID = T extends Partial<Record<FK, infer ID>> ? ID : undefined;
     const builderHash = this.getBuilderHash(queryBuilder);
     const hash =
       repository.metadata.name + '-' + foreignKey + '-many' + '-' + builderHash;
     let loader = this.relationLoaders.get(hash);
     if (!loader) {
-      const builder = async (ids: readonly any[]) => {
-        const queryIds = transformValuesTo(
-          repository,
-          foreignKey,
-          ids as any[],
-        );
+      const builder = async (ids: readonly ID[]) => {
+        const queryIds = transformValuesTo(repository, foreignKey, ids);
         const query = repository
           .createQueryBuilder('t')
           .andWhere(`t.${foreignKey} IN (:...ids)`, {
@@ -184,37 +132,34 @@ export class TypeormDataLoaders {
 
         const query2 = queryBuilder ? await queryBuilder(query) : query;
         const result = await query2.getMany();
-        return regroupObjects(result, ids, (m) => m[foreignKey]);
+        return regroupObjects(result, ids, (m) => m[foreignKey] as ID);
       };
-      loader = new DataLoader<any, T[]>(builder);
+      loader = new DataLoader<ID, T[]>(builder);
       this.relationLoaders.set(hash, loader);
     }
 
-    return loader;
+    return loader as DataLoader<ID, T | null>;
   }
 
   /**
    * Возвращает или создает загрузчик количества сущностей по произвольному полю
    * Созданный загрузчик возвращает количество сущностей, подходящих под условие
    */
-  getManyCountRelationLoader<T>(
+  public getManyCountRelationLoader<T, FK extends string & keyof T>(
     repository: Repository<T>,
-    foreignKey: string,
+    foreignKey: FK,
     queryBuilder?: (
       query: SelectQueryBuilder<T>,
     ) => Promise<SelectQueryBuilder<T>> | SelectQueryBuilder<T>,
-  ): DataLoader<any, number> {
+  ) {
+    type ID = T extends Partial<Record<FK, infer ID>> ? ID : undefined;
     const builderHash = this.getBuilderHash(queryBuilder);
     const hash =
       repository.metadata.name + '-' + foreignKey + '-manyCount-' + builderHash;
     let loader = this.relationLoaders.get(hash);
     if (!loader) {
-      const builder = async (ids: readonly any[]) => {
-        const queryIds = transformValuesTo(
-          repository,
-          foreignKey,
-          ids as any[],
-        );
+      const builder = async (ids: readonly ID[]) => {
+        const queryIds = transformValuesTo(repository, foreignKey, ids as ID[]);
         const query = repository
           .createQueryBuilder('t')
           .select(`t.${foreignKey}`, 'item_id')
@@ -236,25 +181,26 @@ export class TypeormDataLoaders {
           (m) => m?.count || 0,
         );
       };
-      loader = new DataLoader<any, number>(builder);
+      loader = new DataLoader<ID, number>(builder);
       this.relationLoaders.set(hash, loader);
     }
 
-    return loader;
+    return loader as DataLoader<ID, number>;
   }
 
   /**
    * Возвращает или создает загрузчик сущностей по произвольному полю
    * Созданный загрузчик возвращает массив сущностей, подходящих под условие
    */
-  getManyToManyRelationLoader<T>(
+  public getManyToManyRelationLoader<T, FK extends string & keyof T>(
     repository: Repository<T>,
-    foreignKey: string,
-    joinKey: string,
+    foreignKey: FK,
+    joinKey: keyof T & string,
     queryBuilder?: (
       query: SelectQueryBuilder<T>,
     ) => Promise<SelectQueryBuilder<T>> | SelectQueryBuilder<T>,
-  ): DataLoader<any, T[]> {
+  ) {
+    type ID = T extends Partial<Record<FK, infer ID>> ? ID : undefined;
     const builderHash = this.getBuilderHash(queryBuilder);
     const hash =
       repository.metadata.name +
@@ -266,12 +212,8 @@ export class TypeormDataLoaders {
       builderHash;
     let loader = this.relationLoaders.get(hash);
     if (!loader) {
-      const builder = async (ids: readonly any[]) => {
-        const queryIds = transformValuesTo(
-          repository,
-          foreignKey,
-          ids as any[],
-        );
+      const builder = async (ids: readonly ID[]) => {
+        const queryIds = transformValuesTo(repository, foreignKey, ids);
         const query = repository
           .createQueryBuilder('t')
           .innerJoinAndMapOne(`t.${joinKey}`, `t.${joinKey}`, 't1')
@@ -281,19 +223,19 @@ export class TypeormDataLoaders {
 
         const query2 = queryBuilder ? await queryBuilder(query) : query;
         const result = await query2.getMany();
-        return regroupObjects(result, ids, (m) => m[foreignKey]);
+        return regroupObjects(result, ids, (m) => m[foreignKey] as ID);
       };
-      loader = new DataLoader<any, T[]>(builder);
+      loader = new DataLoader<ID, T[]>(builder);
       this.relationLoaders.set(hash, loader);
     }
 
-    return loader;
+    return loader as DataLoader<ID, T[]>;
   }
 
   /**
    * Создает загрузчик с произвольной функцией загрузки
    */
-  getLoader<K, T>(builder: BatchLoadFn<K, T>): DataLoader<K, T> {
+  public getLoader<K, T>(builder: BatchLoadFn<K, T>): DataLoader<K, T> {
     let loader = this.loaders.get(builder);
     if (!loader) {
       loader = new DataLoader(builder);
@@ -303,14 +245,14 @@ export class TypeormDataLoaders {
     return loader;
   }
 
-  memInvoke = createLodashMemoizer(
+  protected memInvoke = createLodashMemoizer(
     <K, T>(fn: BatchLoadCreator<K, T>, ...args) => fn(...args),
   );
 
   /**
    * Создает загрузчик с произвольной функцией загрузки
    */
-  getLoaderArgs<K, T>(
+  public getLoaderArgs<K, T>(
     builderCreator: BatchLoadCreator<K, T>,
     ...args
   ): DataLoader<K, T> {
@@ -327,7 +269,7 @@ export class TypeormDataLoaders {
   /**
    * Возвращает строковый хеш переданной функции
    */
-  getBuilderHash(builder: Function | null | undefined) {
+  protected getBuilderHash(builder: Function | null | undefined) {
     if (!builder) return '';
     const hash = this.builders.get(builder);
     if (!hash) {
@@ -337,57 +279,5 @@ export class TypeormDataLoaders {
       return id;
     }
     return hash;
-  }
-}
-
-/**
- * Декоратор для аргумента резолвера, позволяющий получить даталоадер для заданной сущности
- */
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const InjectEntityLoader = (Entity: Function, connection?: string) =>
-  createParamDecorator((data_, context: ExecutionContext) => {
-    const graphqlExecutionContext = GqlExecutionContext.create(context);
-    const ctx = graphqlExecutionContext.getContext();
-    if (ctx.typeormDataLoaders) {
-      const dl: TypeormDataLoaders = ctx.typeormDataLoaders;
-      return dl.getEntityLoader(Entity, connection);
-    }
-    throw new Error(
-      `Variable 'typeormDataLoaders' is not found in the GraphQL context`,
-    );
-  })();
-
-/**
- * Декоратор для аргумента резолвера, позволяющий получить сервис даталоадеров
- */
-export const InjectTypeormDataLoaders = () => {
-  return createParamDecorator((data_, context: ExecutionContext) => {
-    const graphqlExecutionContext = GqlExecutionContext.create(context);
-    const ctx = graphqlExecutionContext.getContext();
-    if (ctx.typeormDataLoaders) {
-      return ctx.typeormDataLoaders;
-    }
-    throw new Error(
-      `Variable 'typeormDataLoaders' is not found in the GraphQL context`,
-    );
-  })();
-};
-
-/**
- * Интерцептор, добавляющий переменную dataLoaders в GraphQL-контекст
- */
-@Injectable()
-export class TypeormDataLoaderInterceptor implements NestInterceptor {
-  constructor(private readonly moduleRef: ModuleRef) {}
-
-  public intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<any> {
-    const ctx = GqlExecutionContext.create(context).getContext();
-    if (ctx && !ctx.typeormDataLoaders) {
-      ctx.typeormDataLoaders = new TypeormDataLoaders(this.moduleRef);
-    }
-    return next.handle();
   }
 }

@@ -41,7 +41,7 @@ export class UserQueryResolver {
       type: () => UserPageInput,
       nullable: true,
     })
-    input?: UserPageInput,
+    input: UserPageInput | undefined,
   ) {
     const { filter } = input || ({} as UserPageInput);
 
