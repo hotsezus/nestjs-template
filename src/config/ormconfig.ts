@@ -6,7 +6,7 @@ import { tryNumber } from '@proscom/ui-utils';
 import { booleanEnv } from '../utils/environment';
 import { typeormBaseDirectory } from './environment';
 
-console.error(
+console.info(
   `TypeORM configuration uses base directory '${typeormBaseDirectory}' in ${__filename}`,
 );
 
