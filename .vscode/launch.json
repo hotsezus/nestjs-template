@@ -5,11 +5,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "start:dev",
+      "name": "api:dev",
       "request": "launch",
       "restart": true,
       "console": "integratedTerminal",
-      "runtimeArgs": ["run-script", "start:dev"],
+      "runtimeArgs": ["run-script", "api:dev"],
       "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
       "type": "node",
