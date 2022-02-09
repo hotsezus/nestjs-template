@@ -15,7 +15,14 @@ import { QueuesModule } from './queues/queues.module';
     LoggerModule.forRoot({
       pinoHttp: {
         level: isProduction ? 'info' : 'debug',
-        prettyPrint: !isProduction,
+        transport: isProduction
+          ? undefined
+          : {
+              target: 'pino-pretty',
+              options: {
+                colorize: true,
+              },
+            },
         redact: [
           // В целях безопасности не логируем кукисы
           'req.headers.cookie',
