@@ -1,0 +1,51 @@
+{
+  // Используйте IntelliSense, чтобы узнать о возможных атрибутах.
+  // Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.
+  // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "start:dev",
+      "request": "launch",
+      "restart": true,
+      "console": "integratedTerminal",
+      "runtimeArgs": ["run-script", "start:dev"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node",
+      "protocol": "inspector",
+      "sourceMaps": true
+    },
+    {
+      "name": "worker:dev",
+      "request": "launch",
+      "restart": true,
+      "console": "integratedTerminal",
+      "runtimeArgs": ["run-script", "worker:dev"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node",
+      "protocol": "inspector",
+      "sourceMaps": true
+    },
+    {
+      "name": "scheduler:dev",
+      "request": "launch",
+      "restart": true,
+      "console": "integratedTerminal",
+      "runtimeArgs": ["run-script", "scheduler:dev"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node",
+      "protocol": "inspector",
+      "sourceMaps": true
+    },
+    {
+      "name": "Attach",
+      "port": 9229,
+      "request": "attach",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
+    }
+  ]
+}
