@@ -5,20 +5,25 @@ import tee from 'pino-tee';
 
 import { isProduction } from '../config/environment';
 
-function createPinoLoggerErrorStream(): NodeJS.WritableStream {
+const isErrorLog = (line: any) => line.level >= 50;
+
+const isNonErrorLog = (line: any) => line.level < 50;
+
+function createPinoFilteredStream(
+  filter: (line: any) => boolean,
+  target: NodeJS.WritableStream,
+): NodeJS.WritableStream {
   const stream = tee(process.stdin);
-  stream.tee(process.stderr, (line) => line.level >= 50);
-  stream.pipe(process.stdout);
+  stream.tee(target, filter);
   return stream;
 }
 
-/**
- * Создает поток для
- * @returns
- */
-function createPinoPrettyStream(): PinoPretty.PrettyStream | undefined {
+function createPinoMainStream():
+  | PinoPretty.PrettyStream
+  | NodeJS.WritableStream
+  | undefined {
   return isProduction
-    ? undefined
+    ? createPinoFilteredStream(isNonErrorLog, process.stdout)
     : pretty({
         colorize: true,
       });
@@ -26,8 +31,8 @@ function createPinoPrettyStream(): PinoPretty.PrettyStream | undefined {
 
 export function preparePinoMultistream(): MultiStreamRes {
   const streams = [
-    createPinoLoggerErrorStream(),
-    createPinoPrettyStream(),
+    createPinoFilteredStream(isErrorLog, process.stderr),
+    createPinoMainStream(),
   ].filter(isTruthy);
   return pino.multistream(streams);
 }
