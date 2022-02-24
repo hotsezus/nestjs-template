@@ -6,10 +6,10 @@ import path from 'path';
 import { CommonModule } from '../common/common.module';
 import { initialConfig, playgroundConfig } from '../config/graphql';
 import { TypeormDataLoaderInterceptor } from '../utils/graphql/dataloaders/TypeormDataLoaderInterceptor';
-import { UserGraphqlModule } from './/user/graphql/user.graphql-module';
 import { AuthGraphqlModule } from './auth/graphql/auth.graphql-module';
 import { OAuthGraphqlModule } from './oauth/graphql/oauth.graphql-module';
 import { OAuthRestModule } from './oauth/rest/oauth.rest-module';
+import { UserGraphqlModule } from './user/graphql/user.graphql-module';
 
 @Module({
   imports: [
